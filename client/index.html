@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Admin Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>Firebase Admin Panel</h1>
+    
+    <h2>Add User</h2>
+    <input type="text" id="userId" placeholder="User ID" />
+    <input type="text" id="userName" placeholder="Username" />
+    <input type="number" id="userAge" placeholder="Age" />
+    <button onclick="addUser()">Add User</button>
+
+    <h2>Fetch Users</h2>
+    <button onclick="fetchUsers()">Fetch Users</button>
+    <div id="usersList"></div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
