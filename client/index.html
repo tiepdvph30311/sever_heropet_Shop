@@ -1,49 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt lịch và bán thức ăn</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Service</title>
+  <!-- Bootstrap CSS -->
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Food Service</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Trang chủ</a></li>
-                <li><a href="#menu">Sản phẩm</a></li>
-                <li><a href="#schedule">Đặt lịch</a></li>
-                <li><a href="#cart">Giỏ hàng</a></li>
-            </ul>
-        </nav>
-    </header>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Food Service</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#home">Trang chủ</a></li>
+          <li class="nav-item"><a class="nav-link" href="#menu">Sản Phẩm</a></li>
+          <li class="nav-item"><a class="nav-link" href="#schedule">Đặt lịch</a></li>
+          <li class="nav-item"><a class="nav-link" href="#cart">Giỏ hàng</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-    <main>
-        <section id="home">
-            <h2>Chào mừng đến với dịch vụ đặt lịch và bán thức ăn!</h2>
-        </section>
-        
-        <section id="menu">
-            <h2>Thực đơn</h2>
-            <div id="menu-items"></div>
-        </section>
+  <!-- Hero Section -->
+  <section id="home" class="bg-light text-center py-5">
+    <div class="container">
+      <h1 class="display-4">Chào mừng đến với Heropet_shop Service</h1>
+      <p class="lead">Dịch vụ đặt lịch chăm sóc và bán thức ăn thú cưng cung nhanh chóng, tiện lợi!</p>
+      <a href="#menu" class="btn btn-primary btn-lg">Xem Sản Phẩm</a>
+    </div>
+  </section>
 
-        <section id="schedule">
-            <h2>Đặt lịch</h2>
-            <form id="schedule-form">
-                <input type="text" id="name" placeholder="Tên của bạn" required>
-                <input type="date" id="date" required>
-                <textarea id="notes" placeholder="Ghi chú"></textarea>
-                <button type="submit">Đặt lịch</button>
-            </form>
-        </section>
-    </main>
+  <!-- Menu Section -->
+  <section id="menu" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">Sản Phẩm</h2>
+      <div id="menu-items" class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Card Template sẽ được chèn từ app.js -->
+      </div>
+    </div>
+  </section>
 
-    <footer>
-        <p>&copy; 2024 Food Service</p>
-    </footer>
+  <!-- Schedule Section -->
+  <section id="schedule" class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center mb-4">Đặt lịch</h2>
+      <form id="schedule-form" class="mx-auto" style="max-width: 500px;">
+        <div class="mb-3">
+          <label for="name" class="form-label">Tên của bạn</label>
+          <input type="text" id="name" class="form-control" placeholder="Tên của bạn" required>
+        </div>
+        <div class="mb-3">
+          <label for="date" class="form-label">Chọn ngày</label>
+          <input type="date" id="date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="notes" class="form-label">Ghi chú</label>
+          <textarea id="notes" class="form-control" rows="3" placeholder="Yêu cầu thêm"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Đặt lịch</button>
+      </form>
+    </div>
+  </section>
 
-    <script src="app.js" type="module"></script>
+  <!-- Footer -->
+  <footer class="bg-primary text-white text-center py-3">
+    <p>&copy; 2024 Food Service. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js" type="module"></script>
 </body>
 </html>
