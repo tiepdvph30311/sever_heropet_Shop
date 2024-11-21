@@ -3,22 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Admin Panel</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Đặt lịch và bán thức ăn</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Firebase Admin Panel</h1>
-    
-    <h2>Add User</h2>
-    <input type="text" id="userId" placeholder="User ID" />
-    <input type="text" id="userName" placeholder="Username" />
-    <input type="number" id="userAge" placeholder="Age" />
-    <button onclick="addUser()">Add User</button>
+    <header>
+        <h1>Food Service</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Trang chủ</a></li>
+                <li><a href="#menu">Sản phẩm</a></li>
+                <li><a href="#schedule">Đặt lịch</a></li>
+                <li><a href="#cart">Giỏ hàng</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <h2>Fetch Users</h2>
-    <button onclick="fetchUsers()">Fetch Users</button>
-    <div id="usersList"></div>
+    <main>
+        <section id="home">
+            <h2>Chào mừng đến với dịch vụ đặt lịch và bán thức ăn!</h2>
+        </section>
+        
+        <section id="menu">
+            <h2>Thực đơn</h2>
+            <div id="menu-items"></div>
+        </section>
 
-    <script type="module" src="js/app.js"></script>
+        <section id="schedule">
+            <h2>Đặt lịch</h2>
+            <form id="schedule-form">
+                <input type="text" id="name" placeholder="Tên của bạn" required>
+                <input type="date" id="date" required>
+                <textarea id="notes" placeholder="Ghi chú"></textarea>
+                <button type="submit">Đặt lịch</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Food Service</p>
+    </footer>
+
+    <script src="app.js" type="module"></script>
 </body>
 </html>
