@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách sản phẩm</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Danh sách sản phẩm</h1>
+    <div class="product-list">
+      <% if (products) { %>
+        <% for (let productID in products) { %>
+          <div class="product-item">
+            <h3><%= products[productID].tense %></h3>
+            <p><strong>Giá tiền:</strong> <%= products[productID].giatien %> VNĐ</p>
+            <p><strong>Loại sản phẩm:</strong> <%= products[productID].loaisp %></p>
+            <p><strong>Mô tả:</strong> <%= products[productID].mota %></p>
+            <p><strong>Hạn sử dụng:</strong> <%= products[productID].hansudung %></p>
+            <p><strong>Số lượng:</strong> <%= products[productID].soluong %></p>
+            <p><strong>Trọng lượng:</strong> <%= products[productID].trongluong %> kg</p>
+            <p><strong>Hình ảnh:</strong> <%= products[productID].hinhanh %></p>
+          </div>
+        <% } %>
+      <% } else { %>
+        <p>Không có sản phẩm nào.</p>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>
