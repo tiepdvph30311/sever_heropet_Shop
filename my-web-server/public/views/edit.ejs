@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sửa sản phẩm</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Sửa sản phẩm</h1>
+    <form action="/update/<%= id %>" method="POST">
+      <label for="tense">Tên sản phẩm:</label>
+      <input type="text" name="tense" value="<%= product.tense %>" required><br>
+
+      <label for="giatien">Giá tiền:</label>
+      <input type="number" name="giatien" value="<%= product.giatien %>" required><br>
+
+      <label for="loaisp">Loại sản phẩm:</label>
+      <input type="text" name="loaisp" value="<%= product.loaisp %>" required><br>
+
+      <label for="mota">Mô tả:</label>
+      <textarea name="mota" required><%= product.mota %></textarea><br>
+
+      <label for="hansudung">Hạn sử dụng:</label>
+      <input type="date" name="hansudung" value="<%= product.hansudung %>" required><br>
+
+      <label for="soluong">Số lượng:</label>
+      <input type="number" name="soluong" value="<%= product.soluong %>" required><br>
+
+      <label for="trongluong">Trọng lượng:</label>
+      <input type="number" name="trongluong" value="<%= product.trongluong %>" required><br>
+
+      <label for="hinhanh">Hình ảnh:</label>
+      <input type="text" name="hinhanh" value="<%= product.hinhanh %>" required><br>
+
+      <button type="submit">Cập nhật</button>
+    </form>
+  </div>
+</body>
+</html>
