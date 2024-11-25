@@ -1,0 +1,34 @@
+# Bỏ qua thư mục node_modules
+node_modules/
+
+# Bỏ qua các file log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Bỏ qua file .env (dùng để lưu thông tin môi trường nhạy cảm)
+.env
+
+# Bỏ qua các file hệ điều hành tạm
+.DS_Store
+Thumbs.db
+
+# Bỏ qua các file build/dist
+build/
+dist/
+
+# Bỏ qua tệp của trình chỉnh sửa (VSCode, Sublime Text, ...)
+.vscode/
+.idea/
+*.swp
+
+# Bỏ qua các tệp test coverage
+coverage/
+
+# Bỏ qua cache của package managers
+.pnpm-debug.log
+.eslintcache
+
+# Bỏ qua các tệp tạm
+*.tmp
+*.temp
