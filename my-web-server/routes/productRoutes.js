@@ -13,6 +13,45 @@ router.get('/', async (req, res) => {
     res.status(500).send('Có lỗi xảy ra khi lấy dữ liệu sản phẩm.');
   }
 });
+router.get('/add', async (req, res) => {
+  try {
+    const loaiProductsSnapshot = await db.collection('LoaiProduct').get();
+    const loaiProducts = loaiProductsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    res.render('add', { loaiProducts });
+  } catch (error) {
+    console.error('Lỗi khi lấy loại sản phẩm:', error);
+    res.status(500).send('Có lỗi xảy ra khi lấy loại sản phẩm.');
+  }
+});
+
+// Thêm sản phẩm mới
+router.post('/add', async (req, res) => {
+  const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, hinhanh, type } = req.body;
+
+  try {
+    const newProduct = {
+      tensp,
+      giatien: parseFloat(giatien),
+      mota,
+      loaisp,
+      hansudung,
+      soluong: parseInt(soluong),
+      trongluong: trongluong,
+      hinhanh,
+      type: parseInt(type),
+    };
+
+    await db.collection('SanPham').add(newProduct); // Thêm sản phẩm vào Firestore
+    res.redirect('/product'); // Quay lại danh sách sản phẩm
+  } catch (error) {
+    console.error('Lỗi khi thêm sản phẩm:', error);
+    res.status(500).send('Có lỗi xảy ra khi thêm sản phẩm.');
+  }
+});
+
 
 // Route hiển thị form sửa sản phẩm
 router.get('/edit/:id', async (req, res) => {
