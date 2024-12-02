@@ -43,8 +43,31 @@ router.post('/add', async (req, res) => {
       hinhanh,
       type: parseInt(type),
     };
+      
+    // const docRef = await db.collection('SanPham').add(newProduct);
 
-    await db.collection('SanPham').add(newProduct); // Thêm sản phẩm vào Firestore
+
+    
+
+    // const sanPhamId = docRef.id;
+
+    // await docRef.update({
+    //   idsp: sanPhamId, 
+    // });
+
+
+
+
+     const docRef = await db.collection('SanPham').add(newProduct);
+      
+     const sanPhamId = docRef.id;
+ 
+     await docRef.update({
+       id: sanPhamId, 
+     });
+ 
+
+
     res.redirect('/product'); // Quay lại danh sách sản phẩm
   } catch (error) {
     console.error('Lỗi khi thêm sản phẩm:', error);
@@ -73,27 +96,59 @@ router.get('/edit/:id', async (req, res) => {
 });
 
 // Route cập nhật sản phẩm
-router.post('/update/:id', async (req, res) => {
+router.post('/product/update/:id', async (req, res) => {
+  // const productId = req.params.id;
+  // const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, hinhanh, type } = req.body;
+
+  // const updatedProduct = {
+  //   tensp,
+  //   giatien: parseFloat(giatien),
+  //   mota,
+  //   loaisp,
+  //   hansudung,
+  //   soluong: parseInt(soluong),
+  //   trongluong: parseInt(trongluong),
+  //   hinhanh,
+  //   type: parseInt(type),
+  // };
+
+  // try {
+    
+  //   await db.collection('SanPham').doc(productId).update(updatedProduct);
+  //   res.redirect('/product');
+  // } catch (error) {
+  //   res.status(500).send('Lỗi khi cập nhật sản phẩm');
+  // }'
+
+
   const productId = req.params.id;
   const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, hinhanh, type } = req.body;
 
-  const updatedProduct = {
-    tensp,
-    giatien: parseFloat(giatien),
-    mota,
-    loaisp,
-    hansudung,
-    soluong: parseInt(soluong),
-    trongluong: parseInt(trongluong),
-    hinhanh,
-    type: parseInt(type),
-  };
-
   try {
-    await db.collection('SanPham').doc(productId).update(updatedProduct);
-    res.redirect('/product');
+    const updatedProduct = {
+      tensp,
+      giatien: parseFloat(giatien),
+      mota,
+      loaisp,
+      hansudung,
+      soluong: parseInt(soluong),
+      trongluong: trongluong,
+      hinhanh,
+      type: parseInt(type),
+    };
+
+    const productRef = db.collection('SanPham').doc(productId);
+    const productDoc = await productRef.get();
+    
+    if (!productDoc.exists) {
+      return res.status(404).send('Sản phẩm không tồn tại.');
+    }
+
+    await productRef.update(updatedProduct); // Cập nhật sản phẩm trong Firestore
+    res.redirect('/product'); // Quay lại danh sách sản phẩm
   } catch (error) {
-    res.status(500).send('Lỗi khi cập nhật sản phẩm');
+    console.error('Lỗi khi cập nhật sản phẩm:', error);
+    res.status(500).send('Có lỗi xảy ra khi cập nhật sản phẩm.');
   }
 });
 
