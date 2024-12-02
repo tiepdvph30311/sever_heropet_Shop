@@ -15,7 +15,7 @@
     <div class="card mb-4">
       <div class="card-body">
         <h5 class="card-title">Thêm sản phẩm mới</h5>
-        <a href="/add" class="btn btn-primary">Thêm sản phẩm</a>
+        <a href="/product/add" class="btn btn-primary">Thêm sản phẩm</a>
       </div>
     </div>
 
@@ -33,8 +33,8 @@
                 <p class="card-text"><strong>Mô tả:</strong> <%= product.mota %></p>
 
                 <div class="d-flex justify-content-between">
-                  <a href="/edit/<%= product.id %>" class="btn btn-warning btn-sm">Sửa</a>
-                  <form action="/delete/<%= product.id %>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                  <a href="/product/edit/<%= product.id %>" class="btn btn-warning btn-sm">Sửa</a>
+                  <form action="/product/delete/<%= product.id %>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                   </form>
                 </div>

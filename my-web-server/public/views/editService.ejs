@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cập nhật Dịch Vụ</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Cập nhật dịch vụ</h1>
+    <form action="/update-service/<%= service.idDichVu %>" method="POST">
+      <div class="mb-3">
+        <label for="tenDichVu" class="form-label">Tên Dịch Vụ</label>
+        <input type="text" class="form-control" id="tenDichVu" name="tenDichVu" value="<%= service.tenDichVu %>" required>
+      </div>
+      <div class="mb-3">
+        <label for="gia" class="form-label">Giá</label>
+        <input type="number" class="form-control" id="gia" name="gia" value="<%= service.gia %>" required>
+      </div>
+      <div class="mb-3">
+        <label for="moTa" class="form-label">Mô Tả</label>
+        <textarea class="form-control" id="moTa" name="moTa" required><%= service.moTa %></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="thoiGian" class="form-label">Thời Gian</label>
+        <input type="text" class="form-control" id="thoiGian" name="thoiGian" value="<%= service.thoiGian %>" required>
+      </div>
+      <div class="mb-3">
+        <label for="hoatDong" class="form-label">Hoạt Động</label>
+        <input type="checkbox" id="hoatDong" name="hoatDong" <%= service.hoatDong ? 'checked' : '' %> >
+      </div>
+      <button type="submit" class="btn btn-primary">Cập nhật Dịch Vụ</button>
+      <a href="/services" class="btn btn-secondary">Quay lại</a>
+    </form>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

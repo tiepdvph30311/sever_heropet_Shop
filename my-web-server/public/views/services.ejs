@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách Dịch Vụ</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Danh sách Dịch Vụ</h1>
+    <a href="/services/addService" class="btn btn-primary mb-3">Thêm Dịch Vụ Mới</a>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên Dịch Vụ</th>
+            <th>Giá</th>
+            <th>Mô Tả</th>
+            <th>Thời Gian</th>
+            <th>Hoạt Động</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (services.length > 0) { %>
+            <% services.forEach(service => { %>
+              <tr>
+                <td><%= service.idDichVu %></td>
+                <td><%= service.tenDichVu %></td>
+                <td><%= service.gia %> VNĐ</td>
+                <td><%= service.moTa %></td>
+                <td><%= service.thoiGian %></td>
+                <td><%= service.hoatDong ? 'Đang hoạt động' : 'Ngừng hoạt động' %></td>
+                <td>
+                  <a href="/edit-service/<%= service.idDichVu %>" class="btn btn-warning btn-sm">Sửa</a>
+                  <form action="/services/delete-service/<%= service.idDichVu %>" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                  </form>
+                </td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="text-center">Không có dịch vụ nào hiện có.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

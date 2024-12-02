@@ -13,7 +13,7 @@
   <div class="container mt-5">
     <h1 class="text-center mb-4">Sửa sản phẩm</h1>
 
-    <form action="/update/<%= product.id %>" method="POST">
+    <form action="/product/update/<%= product.id %>" method="POST">
       <div class="mb-3">
         <label for="tensp" class="form-label">Tên sản phẩm</label>
         <input type="text" class="form-control" id="tensp" name="tensp" value="<%= product.tensp %>" required>
