@@ -27,7 +27,7 @@ router.post('/addService', async (req, res) => {
         tenDichVu,
         gia: parseFloat(gia),
         moTa,
-        thoiGian,
+        thoiGian:parseInt(thoiGian),
         hoatDong: hoatDong === 'on', // Checkbox gửi 'on' khi được chọn
       };
   
@@ -51,7 +51,7 @@ router.post('/addService', async (req, res) => {
 
 // Hiển thị form chỉnh sửa dịch vụ
 router.get('/edit-service/:id', async (req, res) => {
-  const serviceId = req.params.id; // Lấy id từ URL
+  const serviceId = req.params.id; 
   try {
     const serviceDoc = await db.collection('services').doc(serviceId).get();
     
@@ -75,7 +75,7 @@ router.post('/services/update-service/:id', async (req, res) => {
       tenDichVu,
       gia: parseFloat(gia),
       moTa,
-      thoiGian,
+      thoiGian :parseInt(thoiGian),
       hoatDong: hoatDong === 'on', // Kiểm tra nếu checkbox được chọn
     };
 

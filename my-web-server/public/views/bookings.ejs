@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách Booking</title>
+  <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Custom styles */
+    body {
+      background-color: #f4f6f9;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+      margin-top: 30px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .table {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+      padding: 15px 20px;
+    }
+
+    .table th {
+      background-color: #007bff;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .table td {
+      font-size: 1rem;
+      color: #555;
+      text-align: center;
+    }
+
+    .table td a {
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      color: #fff;
+      background-color: #dc3545;
+      transition: background-color 0.3s;
+      margin-right: 5px;
+    }
+
+    .table td a:hover {
+      background-color: #c82333;
+    }
+
+    .table td a.edit-btn {
+      background-color: #28a745;
+    }
+
+    .table td a.edit-btn:hover {
+      background-color: #218838;
+    }
+
+    .table thead {
+      background-color: #343a40;
+      color: #fff;
+    }
+
+    .table tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .no-booking-message {
+      text-align: center;
+      color: #888;
+      font-size: 1.2rem;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Danh sách Booking</h1>
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cân Nặng</th>
+          <th>ID Booking</th>
+          <th>ID User</th>
+          <th>Loại Thú Cưng</th>
+          <th>Tên Dịch Vụ</th>
+          <th>Tên Thú Cưng</th>
+          <th>Thời Gian Đặt Lịch</th>
+          <th>Trạng Thái</th>
+          <th>Hành Động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (bookings.length > 0) { %>
+          <% bookings.forEach(booking => { %>
+            <tr>
+              <td><%= booking.id %></td>
+              <td><%= booking.canNang %></td>
+              <td><%= booking.idBooking %></td>
+              <td><%= booking.idUser %></td>
+              <td><%= booking.loaiThuCung %></td>
+              <td><%= booking.tenDichVu %></td>
+              <td><%= booking.tenThuCung %></td>
+              <td><%= booking.thoiGianDatLich.toDate().toLocaleString() %></td>
+              <td><%= booking.trangThai %></td>
+              <td>
+                <!-- Button sửa -->
+                <a href="/bookings/editBooking/<%= booking.idBooking %>" class="btn btn-sm edit-btn">Sửa</a>
+                <!-- Button xóa -->
+                <a href="/bookings/deleteBooking/<%= booking.idBooking %>" class="btn btn-sm btn-danger">Xóa</a>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="10" class="no-booking-message">Không có booking nào.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

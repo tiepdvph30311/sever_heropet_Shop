@@ -26,7 +26,6 @@
 
       <div class="mb-3">
         <label for="loaisp" class="form-label">Loại sản phẩm</label>
-        <!-- Dropdown menu lấy dữ liệu từ LoaiProduct -->
         <select class="form-select" id="loaisp" name="loaisp" required>
           <option value="" disabled selected>Chọn loại sản phẩm</option>
           <% loaiProducts.forEach(loai => { %>
@@ -66,7 +65,7 @@
       </div>
 
       <button type="submit" class="btn btn-success">Cập nhật sản phẩm</button>
-      <a href="/" class="btn btn-secondary">Quay lại</a>
+      <a href="/product" class="btn btn-secondary">Quay lại</a>
     </form>
   </div>
 

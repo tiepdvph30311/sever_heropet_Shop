@@ -29,7 +29,9 @@ app.use('/product', productRouter);
 // Sử dụng route dịch vụ
 const servicesRoutes = require('./routes/servicesRoutes');
 app.use('/services', servicesRoutes); 
-
+// Sử dụng route booking
+const bookingsRouter = require('./routes/bookingsRouter');
+app.use('/bookings', bookingsRouter); 
 
 // Khởi động server
 const port = 3000;
