@@ -96,32 +96,8 @@ router.get('/edit/:id', async (req, res) => {
 });
 
 // Route cập nhật sản phẩm
-router.post('/product/update/:id', async (req, res) => {
-  // const productId = req.params.id;
-  // const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, hinhanh, type } = req.body;
-
-  // const updatedProduct = {
-  //   tensp,
-  //   giatien: parseFloat(giatien),
-  //   mota,
-  //   loaisp,
-  //   hansudung,
-  //   soluong: parseInt(soluong),
-  //   trongluong: parseInt(trongluong),
-  //   hinhanh,
-  //   type: parseInt(type),
-  // };
-
-  // try {
-    
-  //   await db.collection('SanPham').doc(productId).update(updatedProduct);
-  //   res.redirect('/product');
-  // } catch (error) {
-  //   res.status(500).send('Lỗi khi cập nhật sản phẩm');
-  // }'
-
-
-  const productId = req.params.id;
+router.post('/update/:id', async (req, res) => {
+  const productId = req.params.id; // Lấy ID từ URL
   const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, hinhanh, type } = req.body;
 
   try {
@@ -151,6 +127,7 @@ router.post('/product/update/:id', async (req, res) => {
     res.status(500).send('Có lỗi xảy ra khi cập nhật sản phẩm.');
   }
 });
+
 
 // Route xóa sản phẩm
 router.post('/delete/:id', async (req, res) => {
