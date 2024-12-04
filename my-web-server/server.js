@@ -33,6 +33,9 @@ app.use('/services', servicesRoutes);
 const bookingsRouter = require('./routes/bookingsRouter');
 app.use('/bookings', bookingsRouter); 
 
+const HoaDon = require('./routes/hoaDonRouter');
+app.use('/HoaDon', HoaDon); 
+
 // Khởi động server
 const port = 3000;
 app.listen(port, () => {
