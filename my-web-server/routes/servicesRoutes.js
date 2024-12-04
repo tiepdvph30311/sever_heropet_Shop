@@ -67,7 +67,7 @@ router.get('/edit-service/:id', async (req, res) => {
 });
 
 // Cập nhật dịch vụ
-router.post('/services/update-service/:id', async (req, res) => {
+router.post('/update-service/:id', async (req, res) => {
     const serviceId = req.params.id;
     const { tenDichVu, gia, moTa, thoiGian, hoatDong } = req.body;
 

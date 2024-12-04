@@ -9,7 +9,7 @@
 <body>
   <div class="container mt-5">
     <h1 class="text-center mb-4">Cập nhật dịch vụ</h1>
-    <form action="/update-service/<%= service.idDichVu %>" method="POST">
+    <form action="/services/update-service/<%= service.idDichVu %>" method="POST">
       <div class="mb-3">
         <label for="tenDichVu" class="form-label">Tên Dịch Vụ</label>
         <input type="text" class="form-control" id="tenDichVu" name="tenDichVu" value="<%= service.tenDichVu %>" required>
