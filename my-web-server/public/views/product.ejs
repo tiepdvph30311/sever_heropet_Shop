@@ -10,7 +10,7 @@
 
 <body>
 
- 
+  <%- include('../views/hader.ejs') %>
 
   <div class="container mt-5">
     <h1 class="text-center mb-4">Danh sách sản phẩm</h1>
@@ -60,11 +60,11 @@
                   </td>
                   
                   <td>
-                    <a href="/product/edit/<%= product.id %>" class="btn btn-warning btn-sm">Sửa</a>
+                    <a href="/product/edit/<%= product.id %>" class="btn btn-outline-warning">Sửa</a>
                   </td>
                   <td>
                     <form action="/product/delete/<%= product.id %>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')" style="margin: 0;">
-                      <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                      <button type="submit" class="btn btn-outline-danger">Xóa</button>
                     </form>
                   </td>
               </tr>
