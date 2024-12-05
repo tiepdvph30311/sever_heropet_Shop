@@ -95,6 +95,25 @@ router.get('/edit/:id', async (req, res) => {
   }
 });
 
+
+router.get('/ChiTietSP/:id', async (req, res) => {
+  const productId = req.params.id;
+  try {
+    const productDoc = await db.collection('SanPham').doc(productId).get();
+    if (!productDoc.exists) {
+      res.status(404).send('Sản phẩm không tồn tại');
+    } else {
+      const product = productDoc.data();
+      // Lấy danh sách loại sản phẩm (loaiProducts)
+      const loaiProductsSnapshot = await db.collection('LoaiProduct').get();
+      const loaiProducts = loaiProductsSnapshot.docs.map(doc => doc.data());
+      res.render('ctsanpham', { product, loaiProducts });
+    }
+  } catch (error) {
+    res.status(500).send('Lỗi khi lấy dữ liệu sản phẩm');
+  }
+});
+
 // Route cập nhật sản phẩm
 router.post('/update/:id', async (req, res) => {
   const productId = req.params.id; // Lấy ID từ URL

@@ -10,100 +10,91 @@
 
 <body>
 
-  <%- include('../views/hader.ejs') %>
 
-  <div class="container mt-5">
-    <h1 class="text-center mb-4">Danh sách sản phẩm</h1>
+  <div class="d-flex position-relative">
 
-    <div class="card mb-4">
-      <div class="card-body">
-        <h5 class="card-title">Thêm sản phẩm mới</h5>
-        <a href="/product/add" class="btn btn-primary">Thêm sản phẩm</a>
-      </div>
-    </div>
+    <%- include('../views/hader.ejs') %>
+      <div>
+        <div class="container mt-5">
 
+            <h1 class="text-center mb-4">Danh sách sản phẩm</h1>
 
-    <table id="amthucTable" class="table table-striped table-bordered table-hover">
-      <thead class="thead-dark">
-          <tr>
-            <th class="text-center">Ảnh</th>
-            <th class="text-center">Tên</th>
-              <th class="text-center">gia</th>
-              <th class="text-center">loai</th>
-              <th class="text-center">Mô Tả</th>
-              <th class="text-center">Sửa SP</th>
-              <th class="text-center">Xóa SP</th>
-          </tr>
-      </thead>
-      <tbody>
-          <% products.forEach(product => { %>
-              <tr>
-                  <td>
-                    <img src="<%= product.hinhanh %>"  class="img-fluid text-center" style="max-width: 120px;" alt="<%= product.tense %>">
-                  </td>
-                  <td>
-
-                    
-                <p class="card-text text-center"> <%= product.tensp %></p>
-                  </td>
-                  <td>
-                     
-                <p class="card-text text-center"><%= product.giatien %> VNĐ</p>
-                  </td>
-                  <td>
-                    
-                <p class="card-text text-center"> <%= product.loaisp %></p>
-                  </td>
-                  <td class="text-center">
-                    
-                <p class="card-text text-center"> <%= product.mota %></p>
-                  </td>
-                  
-                  <td>
-                    <a href="/product/edit/<%= product.id %>" class="btn btn-outline-warning">Sửa</a>
-                  </td>
-                  <td>
-                    <form action="/product/delete/<%= product.id %>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')" style="margin: 0;">
-                      <button type="submit" class="btn btn-outline-danger">Xóa</button>
-                    </form>
-                  </td>
-              </tr>
-          <% }); %>
-      </tbody>
-  </table>
-
-    <!-- <div class="row">
-      <% if (products && products.length > 0) { %>
-        <% products.forEach(product => { %>
-          <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-              <img src="<%= product.hinhanh %>" class="card-img-top" alt="<%= product.tensp %>">
+            <div class="card mb-4">
               <div class="card-body">
-                <h5 class="card-title"><%= product.tensp %></h5>
-                <p class="card-text"><strong>ID:</strong> <%= product.id %></p>
-                <p class="card-text"><strong>Giá:</strong> <%= product.giatien %> VNĐ</p>
-                <p class="card-text"><strong>Loại:</strong> <%= product.loaisp %></p>
-                <p class="card-text"><strong>Mô tả:</strong> <%= product.mota %></p>
-
-                <div class="d-flex justify-content-between">
-                  <a href="/product/edit/<%= product.id %>" class="btn btn-warning btn-sm">Sửa</a>
-                  <form action="/product/delete/<%= product.id %>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
-                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-                  </form>
-                </div>
+                <h5 class="card-title">Thêm sản phẩm mới</h5>
+                <a href="/product/add" class="btn btn-primary">Thêm sản phẩm</a>
               </div>
             </div>
-          </div>
-        <% }); %>
-      <% } else { %>
-        <div class="text-center">
-          <p>Không có sản phẩm nào.</p>
-        </div>
-      <% } %>
-    </div> -->
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+            <table id="amthucTable" class="table table-striped table-bordered table-hover">
+              <thead class="thead-dark">
+                <tr>
+                  <th class="text-center">Ảnh</th>
+                  <th class="text-center">Tên</th>
+                  <th class="text-center">Giá</th>
+                  <th class="text-center">Loại</th>
+                  <th class="text-center">Chi tiết</th>
+                  <th class="text-center">Sửa SP</th>
+                  <th class="text-center">Xóa SP</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% products.forEach(product=> { %>
+                  <tr>
+                    <td>
+                      <img src="<%= product.hinhanh %>" class="img-fluid text-center" style="max-width: 120px;"
+                        alt="<%= product.tense %>">
+                    </td>
+                    <td>
+
+
+                      <p class="card-text text-center">
+                        <%= product.tensp %>
+                      </p>
+                    </td>
+                    <td>
+
+                      <p class="card-text text-center">
+                        <%= product.giatien %> VNĐ
+                      </p>
+                    </td>
+                    <td>
+
+                      <p class="card-text text-center">
+                        <%= product.loaisp %>
+                      </p>
+                    </td>
+
+                    <td>
+                      <a href="/product/ChiTietSP/<%= product.id %>" class="btn btn-outline-info">Chi Tiết</a>
+                    </td>
+                    <td>
+                      <a href="/product/edit/<%= product.id %>" class="btn btn-outline-warning">Sửa</a>
+                    </td>
+                    <td>
+                      <form action="/product/delete/<%= product.id %>" method="POST"
+                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')" style="margin: 0;">
+                        <button type="submit" class="btn btn-outline-danger">Xóa</button>
+                      </form>
+                    </td>
+                  </tr>
+                  <% }); %>
+              </tbody>
+            </table>
+
+
+
+        </div>
+      </div>
+
+
+
+
+
+
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
