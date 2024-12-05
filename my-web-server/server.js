@@ -106,6 +106,7 @@ app.use('/product', productRouter);
 const servicesRoutes = require('./routes/servicesRoutes');
 app.use('/services', servicesRoutes);
 
+<<<<<<< HEAD
 const bookingsRouter = require('./routes/bookingsRouter');
 app.use('/bookings', bookingsRouter);
 
@@ -113,6 +114,12 @@ const doanhthusRouter = require('./routes/doanhThuRoutes');
 app.use('/doanhthu', doanhthusRouter);
 
 // Start the server
+=======
+const HoaDon = require('./routes/hoaDonRouter');
+app.use('/HoaDon', HoaDon); 
+
+// Khởi động server
+>>>>>>> 836fbcf1e94afd70d9054c970fdf19b2c5724414
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
