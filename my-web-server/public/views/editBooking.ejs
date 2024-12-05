@@ -81,14 +81,14 @@
 <body>
   <div class="container">
     <h1>Sửa Booking</h1>
-    <form action="/bookings/editBooking/<%= booking.idBooking %>" method="POST">
+    <form action="/bookings/editBooking/<%= booking.idcthdbooking %>" method="POST"> <!-- Thay idBooking bằng idcthdbooking -->
       <div class="mb-3">
         <label for="canNang" class="form-label">Cân Nặng</label>
-        <input type="text" class="form-control" id="canNang" name="canNang" value="<%= booking.canNang %>" required>
+        <input type="text" class="form-control" id="canNang" name="canNang" value="<%= booking.canNang %>" readonly>
       </div>
       <div class="mb-3">
-        <label for="idBooking" class="form-label">ID Booking</label>
-        <input type="text" class="form-control" id="idBooking" name="idBooking" value="<%= booking.idBooking %>" readonly>
+        <label for="idcthdbooking" class="form-label">ID Booking</label> <!-- Thay idBooking bằng idcthdbooking -->
+        <input type="text" class="form-control" id="idcthdbooking" name="idcthdbooking" value="<%= booking.idcthdbooking %>" readonly> <!-- Thay idBooking bằng idcthdbooking -->
       </div>
       <div class="mb-3">
         <label for="idUser" class="form-label">ID User</label>
@@ -96,24 +96,29 @@
       </div>
       <div class="mb-3">
         <label for="loaiThuCung" class="form-label">Loại Thú Cưng</label>
-        <input type="text" class="form-control" id="loaiThuCung" name="loaiThuCung" value="<%= booking.loaiThuCung %>" required>
+        <input type="text" class="form-control" id="loaiThuCung" name="loaiThuCung" value="<%= booking.loaiThuCung %>" readonly>
       </div>
       <div class="mb-3">
         <label for="tenDichVu" class="form-label">Tên Dịch Vụ</label>
-        <input type="text" class="form-control" id="tenDichVu" name="tenDichVu" value="<%= booking.tenDichVu %>" required>
+        <input type="text" class="form-control" id="tenDichVu" name="tenDichVu" value="<%= booking.tenDichVu %>" readonly>
       </div>
       <div class="mb-3">
         <label for="tenThuCung" class="form-label">Tên Thú Cưng</label>
-        <input type="text" class="form-control" id="tenThuCung" name="tenThuCung" value="<%= booking.tenThuCung %>" required>
+        <input type="text" class="form-control" id="tenThuCung" name="tenThuCung" value="<%= booking.tenThuCung %>" readonly>
       </div>
       <div class="mb-3">
         <label for="thoiGianDatLich" class="form-label">Thời Gian Đặt Lịch</label>
-        <input type="datetime-local" class="form-control" id="thoiGianDatLich" name="thoiGianDatLich" value="<%= booking.thoiGianDatLich.toDate().toISOString().slice(0, 16) %>" required>
+        <input type="datetime-local" class="form-control" id="thoiGianDatLich" name="thoiGianDatLich" value="<%= booking.thoiGianDatLich.toDate().toISOString().slice(0, 16) %>" readonly>
       </div>
       <div class="mb-3">
         <label for="trangThai" class="form-label">Trạng Thái</label>
-        <input type="text" class="form-control" id="trangThai" name="trangThai" value="<%= booking.trangThai %>" required>
+        <select class="form-control" id="trangThai" name="trangThai" required>
+          <option value="Chưa xác nhận" <%= booking.trangThai === 'Chưa xác nhận' ? 'selected' : '' %>>Chưa xác nhận</option>
+          <option value="Đã xác nhận" <%= booking.trangThai === 'Đã xác nhận' ? 'selected' : '' %>>Đã xác nhận</option>
+          <option value="Đã huỷ" <%= booking.trangThai === 'Đã huỷ' ? 'selected' : '' %>>Đã huỷ</option>
+        </select>
       </div>
+
       <div class="d-flex justify-content-between">
         <button type="submit" class="btn btn-primary">Cập Nhật</button>
         <a href="/bookings" class="btn btn-back">Quay lại</a>

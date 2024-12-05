@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
@@ -36,7 +37,7 @@ router.get('/', async (req, res) => {
   
   router.post('/editBooking/:idBooking', async (req, res) => {
     const { idBooking } = req.params;
-    const { canNang, idUser, loaiThuCung, tenDichVu, tenThuCung, thoiGianDatLich, trangThai } = req.body;
+    const { canNang, iduser, loaiThuCung, tenDichVu, tenThuCung, thoiGianDatLich, trangThai } = req.body;
     try {
       const snapshot = await db.collection('CTHDBooking').where('idBooking', '==', idBooking).get();
       if (snapshot.empty) {
@@ -45,7 +46,7 @@ router.get('/', async (req, res) => {
       const docId = snapshot.docs[0].id;
       await db.collection('bookings').doc(docId).update({
         canNang:parseInt(canNang),
-        idUser,
+        iduser,
         loaiThuCung,
         tenDichVu,
         tenThuCung,

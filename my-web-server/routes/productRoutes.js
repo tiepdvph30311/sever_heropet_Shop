@@ -108,7 +108,7 @@ router.post('/update/:id', async (req, res) => {
       loaisp,
       hansudung,
       soluong: parseInt(soluong),
-      trongluong: trongluong,
+      trongluong,
       hinhanh,
       type: parseInt(type),
     };
@@ -140,46 +140,6 @@ router.post('/delete/:id', async (req, res) => {
   }
 });
 
-router.get('/doanhthu', async (req, res) => {
-  const { startDate, endDate } = req.query;
 
-  try {
-    let query = db.collection('CTHDBooking'); // Sử dụng bảng CTHDBooking
-
-    // Nếu người dùng chọn mốc thời gian, lọc theo thời gian
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      query = query.where('thoiGianDatLich', '>=', start).where('thoiGianDatLich', '<=', end);
-    }
-
-    // Lọc những bản ghi có trang thái là "Đã xác nhận"
-    query = query.where('trangThai', '==', 'Đã xác nhận');
-
-    const snapshot = await query.get();
-    
-    let doanhThu = [];
-
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const date = new Date(data.thoiGianDatLich.toDate()).toISOString().split('T')[0]; // Lấy ngày từ timestamp
-      const giaDichVu = data.giaDichVu;
-
-      let dayRevenue = doanhThu.find(item => item.date === date);
-      
-      if (dayRevenue) {
-        dayRevenue.revenue += giaDichVu; 
-      } else {
-        doanhThu.push({ date, revenue: giaDichVu });
-      }
-    });
-
-    // Render view cùng với dữ liệu doanh thu
-    res.render('doanhthu', { doanhThu, startDate, endDate });
-  } catch (error) {
-    console.error('Lỗi khi lấy dữ liệu doanh thu:', error);
-    res.status(500).send('Có lỗi xảy ra khi lấy dữ liệu doanh thu.');
-  }
-});
 
 module.exports = router;
