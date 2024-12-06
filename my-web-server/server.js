@@ -58,6 +58,8 @@ app.get('/', (req, res) => {
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
+  console.log('Username:', username);  // Log để kiểm tra
+  console.log('Password:', password);  // Log để kiểm tra
 
   try {
     const adminsRef = db.collection('Admin'); // Lấy collection Admin
