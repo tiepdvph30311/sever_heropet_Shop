@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
       const bookings = snapshot.docs.map(doc => doc.data());
   
       // Render dữ liệu vào template (có thể dùng EJS, Pug, hoặc gửi dưới dạng JSON)
+      
       res.render('bookings', { bookings });
     } catch (error) {
       console.error("Lỗi khi tải danh sách bookings:", error);  // Log lỗi chi tiết

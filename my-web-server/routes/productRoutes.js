@@ -88,7 +88,12 @@ router.get('/edit/:id', async (req, res) => {
       // Lấy danh sách loại sản phẩm (loaiProducts)
       const loaiProductsSnapshot = await db.collection('LoaiProduct').get();
       const loaiProducts = loaiProductsSnapshot.docs.map(doc => doc.data());
+      
+    
+
+
       res.render('edit', { product, loaiProducts });
+      
     }
   } catch (error) {
     res.status(500).send('Lỗi khi lấy dữ liệu sản phẩm');
