@@ -5,16 +5,16 @@ const db = admin.firestore();
 
 // Đường dẫn đến danh sách bookings
 router.get('/', async (req, res) => {
-  try {
-    const snapshot = await db.collection('CTHDBooking').get();
-    const bookings = snapshot.docs.map(doc => doc.data());
-    res.render('bookings', { bookings });
-  } catch (error) {
-    console.error("Lỗi khi tải danh sách bookings:", error);
-    res.status(500).send('Lỗi khi tải danh sách bookings');
-  }
-});
-
+    try {
+      const snapshot = await db.collection('CTHDBooking').get();
+      const bookings = snapshot.docs.map(doc => doc.data()); 
+      // Render dữ liệu vào template (có thể dùng EJS, Pug, hoặc gửi dưới dạng JSON)  
+      res.render('bookings', { bookings });
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách bookings:", error);  // Log lỗi chi tiết
+      res.status(500).send('Lỗi khi tải danh sách bookings');
+    }
+  });
 // Sửa booking
 router.get('/editBooking/:idcthdbooking', async (req, res) => {
   const { idcthdbooking } = req.params;
