@@ -56,14 +56,6 @@ router.get('/', async (req, res) => {
       res.status(500).send('Lỗi khi cập nhật HoaDon');
     }
   });
-
-
-
-
-
-
-
-
   
   // Xóa booking
   router.get('/deleteBooking/:idBooking', async (req, res) => {

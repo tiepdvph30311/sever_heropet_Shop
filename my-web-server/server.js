@@ -99,7 +99,6 @@ app.get('/dashboard', (req, res) => {
   res.send('Welcome to the admin dashboard!'); // Customize this as needed
 });
 
-// Your other routes
 const productRouter = require('./routes/productRoutes');
 app.use('/product', productRouter);
 
@@ -112,8 +111,6 @@ app.use('/bookings', bookingsRouter);
 
 const doanhthusRouter = require('./routes/doanhThuRoutes');
 app.use('/doanhthu', doanhthusRouter);
-
-// Start the server
 
 const HoaDon = require('./routes/hoaDonRouter');
 app.use('/HoaDon', HoaDon); 
