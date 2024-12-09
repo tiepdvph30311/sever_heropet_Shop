@@ -13,14 +13,10 @@
     html,
     body {
       height: 100%;
-      background-image: url('../images/bg2.png');
-      /* Đường dẫn ảnh */
+      background-image: url('../images/bg.jpg');
       background-size: cover;
-      /* Làm cho ảnh phủ kín màn hình */
       background-position: center;
-      /* Căn giữa ảnh */
       background-attachment: fixed;
-      /* Giữ ảnh cố định khi cuộn trang */
     }
 
     .form-signin {
@@ -38,7 +34,6 @@
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
       background-color: rgba(179, 185, 225, 0.5);
-      /* Màu nền với độ trong suốt */
     }
 
     .form-signin input[type="password"] {
@@ -47,20 +42,14 @@
       border-top-left-radius: 0;
       border-top-right-radius: 0;
       background-color: rgba(179, 185, 225, 0.5);
-      /* Màu nền với độ trong suốt */
     }
-
-    /* Cải thiện độ mờ cho form đăng nhập để dễ nhìn */
     .form-signin {
       border-color: rgb(252, 252, 252);
       border: 9px;
       background-color: rgba(255, 255, 255, 0.2);
-      /* Màu nền với độ trong suốt */
       padding: 30px;
       border-radius: 8px;
-      /* Bo góc cho form */
       box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
-      /* Thêm bóng đổ cho form */
     }
   </style>
 </head>
@@ -96,18 +85,12 @@
 
   <style>
     #successMessage {
-      position: fixed;
-      /* Định vị cố định */
+      position: fixed;     
       bottom: 20px;
-      /* Cách dưới 20px */
-      right: 20px;
-      /* Cách phải 20px */
-      z-index: 1050;
-      /* Đảm bảo thông báo không bị các phần tử khác che khuất */
+      right: 20px;  
+      z-index: 1050;   
       opacity: 1;
-      /* Đảm bảo rằng thông báo không trong suốt */
       transition: opacity 0.5s ease-out;
-      /* Thêm hiệu ứng mờ dần */
     }
   </style>
 </body>

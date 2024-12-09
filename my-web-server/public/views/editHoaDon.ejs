@@ -128,15 +128,13 @@
           </tr>
         </thead>
         <tbody>
-          <% listCTHDSP.forEach(product=> { %>
-            <tr>
+            <% listCTHDSP.forEach(product=> { %>
+          <tr>
               <td>
                 <img src="<%= product.hinhanh %>" class="img-fluid text-center" style="max-width: 120px;"
                   alt="<%= product.tense %>">
               </td>
               <td>
-
-
                 <p class="card-text text-center">
                   <%= product.tensp %>
                 </p>
@@ -147,20 +145,15 @@
                   <%= product.giatien %> VNĐ
                 </p>
               </td>
+                <% }); %>
               <td>
                 <% ChiTHd.forEach(data=>{ %>
                   <p class="card-text text-center">
                     <%= data.soluong %>
-                      <% }) %>
-
-
                   </p>
+                  <% }) %>
               </td>
-
-
-
-            </tr>
-            <% }); %>
+          </tr>
         </tbody>
       </table>
 
