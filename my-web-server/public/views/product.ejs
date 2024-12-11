@@ -6,6 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danh sách sản phẩm</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .main-content{
+      margin-left: 210px;
+    }
+ 
+  </style>
 </head>
 
 <body>
@@ -14,7 +20,7 @@
   <div class="d-flex position-relative">
 
     <%- include('../views/hader.ejs') %>
-      <div>
+      <div class="main-content">
         <div class="container mt-5">
 
             <h1 class="text-center mb-4">Danh sách sản phẩm</h1>
@@ -22,7 +28,7 @@
             <div class="card mb-4">
               <div class="card-body">
                 <h5 class="card-title">Thêm sản phẩm mới</h5>
-                <a href="/product/add" class="btn btn-primary">Thêm sản phẩm</a>
+                <a href="/product/add" class="btn btn-outline-primary">Thêm sản phẩm</a>
               </div>
             </div>
 

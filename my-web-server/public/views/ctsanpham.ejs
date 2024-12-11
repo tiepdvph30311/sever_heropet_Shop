@@ -14,7 +14,7 @@
     <h1 class="text-center mb-4">Chi tiết sản phẩm</h1>
 
     <form action="/produc>" method="POST">
-      <div >
+      <!-- <div >
         <label for="tensp" class="form-label">Tên sản phẩm</label>
         <p><%= product.tensp %></p>
       </div>
@@ -62,7 +62,64 @@
       <div class="mb-3">
         <label for="type" class="form-label">Loại (type): <p><%= product.type %></p></label>
                  
-      </div>
+      </div> -->
+
+      <table id="amthucTable" class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th class="text-center">Ảnh</th>
+            <th class="text-center">Tên</th>
+            <th class="text-center">Giá</th>
+            <th class="text-center">Loại</th>
+            <th class="text-center">Số lượng</th>
+            <th class="text-center">Mô tả</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td>
+                <img src="<%= product.hinhanh %>" class="img-fluid text-center" style="max-width: 120px;"
+                  alt="<%= product.tense %>">
+              </td>
+              <td>
+
+
+                <p class="card-text text-center">
+                  <%= product.tensp %>
+                </p>
+              </td>
+              <td>
+
+                <p class="card-text text-center">
+                  <%= product.giatien %> VNĐ
+                </p>
+              </td>
+              <td>
+
+                <p class="card-text text-center">
+                  <%= product.loaisp %>
+                </p>
+              </td>
+              <td>
+
+                <p class="card-text text-center">
+                  <%= product.soluong %>
+                  
+                </p>
+              </td>
+              <td>
+
+                <p class="card-text text-center">
+                  <%= product.mota %>
+                  
+                </p>
+              </td>
+
+              
+              
+            </tr>
+        </tbody>
+      </table>
 
       <a href="/product" class="btn btn-secondary">Quay lại</a>
     </form>

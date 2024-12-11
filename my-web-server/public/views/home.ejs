@@ -6,20 +6,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danh sách sản phẩm</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .main-content {
+      margin-left: 200px;
+    }
+
+    .mySlides {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s, transform 0.5s;
+    }
+
+    .fade.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .slide-right.active {
+      transform: translateX(-100%);
+    }
+  </style>
 </head>
 
-<body>
+<body onload="star()">
 
 
   <div class="d-flex position-relative">
     <%- include('../views/hader.ejs') %>
-    <div>
-    </div>
+      <div class="main-content">
+<h3>Sau này các bạn nhìn lên bầu trời sẽ thấy 1 vị tinh tú tên j97</h3>
+        <div>
+          <img src="../images/j97_01.jpg" style="background-attachment: fixed; width: 100%;" id="anh1" 
+            alt="">
+        </div>
+        
+      </div>
   </div>
-  
+
+  <script>
+        
+    let magAnh= ["../images/j97_01.jpg","../images/j97_02.jpg","../images/j97_03.jpg","../images/j97_04.jpg","../images/j97_05.jpg"]
+    let vitri=0
+    let nodeAnh=document.getElementById("anh1")
+    function lui(){
+        vitri--
+        if(vitri<0){
+            vitri=4
+        }
+        
+        nodeAnh.src=magAnh[vitri]
+    }
+    function tien(){
+        vitri++
+        if(vitri>4){
+            vitri=0
+        }
+        nodeAnh.src=magAnh[vitri]
+    }
+    let dungAnh
+    function star(){
+        let dem=1
+        dungAnh= setInterval (()=>{
+            vitri=dem%magAnh.length
+            nodeAnh.src=magAnh[vitri]
+            dem++
+        },1500)
+    }
+    function stop(){
+        clearInterval(dungAnh)
+    }
+
+</script>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

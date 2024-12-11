@@ -21,6 +21,8 @@ router.get('/', async (req, res) => {
                    .where('thoiGianDatLich', '<=', admin.firestore.Timestamp.fromDate(end));
     }
 
+
+
     const snapshot = await query.get();
     const serviceUsage = {};
     let totalRevenue = 0;

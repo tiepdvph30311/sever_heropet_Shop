@@ -58,9 +58,6 @@ app.get('/', (req, res) => {
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  console.log('Username:', username);  // Log để kiểm tra
-  console.log('Password:', password);  // Log để kiểm tra
-
   try {
     const adminsRef = db.collection('Admin'); // Lấy collection Admin
     const snapshot = await adminsRef.get();   // Lấy tất cả documents trong collection
@@ -118,6 +115,9 @@ app.use('/doanhthu', doanhthusRouter);
 const HoaDon = require('./routes/hoaDonRouter');
 app.use('/HoaDon', HoaDon); 
 
+
+const doanhthusp = require('./routes/doanhThuSProuter');
+app.use('/doanhthusp', doanhthusp); 
 // Khởi động server
 
 const port = 3000;

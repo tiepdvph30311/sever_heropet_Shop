@@ -83,8 +83,8 @@
 
 <body>
   <div class="container">
-    <h1>Sửa Hóa Đơn</h1>
-    <form action="/HoaDon/editHoaDon/<%= HoaDon.id %>" method="POST">
+    <h1>Chi tiết hóa đơn</h1>
+    <form action="/doanhthusp/chitietdoanhthu/<%= HoaDon.id %>" method="POST">
       <div class="mb-3">
         <label for="hoten" class="form-label">Họ Tên: <%= HoaDon.hoten %></label>
       </div>
@@ -108,12 +108,18 @@
       </div>
       <div class="mb-3">
         <label for="trangthai" class="form-label">Trạng Thái:
-          <select id="trangthai" name="trangthai" required>
-            <option value="1">Đang xử lý</option>
-            <option value="2">Đang giao hàng</option>
-            <option value="3">Giao hàng thành công</option>
-            <option value="4">Hủy hàng</option>
-          </select>
+            <% if(HoaDon.trangthai==1){ %>
+                <p style="color: orange;">Đang xử lý</p>
+              <% } %>
+              <% if(HoaDon.trangthai==2){ %>
+                    <p style="color: orange;">Đang giao hàng</p>
+              <% } %>
+              <% if(HoaDon.trangthai==3){ %>
+                        <p style="color: rgb(0, 255, 26);">Giao hàng thành công</p>
+              <% } %>
+              <% if(HoaDon.trangthai==4){ %>
+                            <p style="color: red;">Hủy hàng</p>
+              <% } %>
         </label>
       </div>
 
@@ -157,8 +163,7 @@
       </table>
 
       <div class="d-flex justify-content-between">
-        <button type="submit" class="btn btn-primary">Cập Nhật</button>
-        <a href="/HoaDon" class="btn btn-back">Quay lại</a>
+        <a href="/doanhthusp" class="btn btn-back">Quay lại</a>
       </div>
     </form>
   </div>

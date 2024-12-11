@@ -33,6 +33,8 @@ router.get('/editHoaDon/:id', async (req, res) => {
     const HoaDon = snapshot.docs[0].data();
 
 
+
+
     const doccthd = await db.collection('ChitietHoaDon')
       .doc(HoaDon.UID)  // Document chứa subcollection ALL
       .collection('ALL')  // Truy vấn vào subcollection ALL
@@ -46,27 +48,50 @@ router.get('/editHoaDon/:id', async (req, res) => {
 
     //truy van id cua san pham
     await Promise.all(
-    ChiTHd.map( async idProduct => {
-      try{
-        const docSP =await db.collection('SanPham')  // Truy vấn vào collection SanPham
-        .doc(idProduct.id_product)  // Dùng id_product để truy vấn
-        .get()
+      ChiTHd.map(async idProduct => {
+        try {
+          const docSP = await db.collection('SanPham')  // Truy vấn vào collection SanPham
+            .doc(idProduct.id_product)  // Dùng id_product để truy vấn
+            .get()
 
-        if (docSP.exists) {
-          listCTHDSP.push(docSP.data());
-        } else {
-          console.error('Không tìm thấy sản phẩm với ID:', idProduct.id_product);
+          if (docSP.exists) {
+            listCTHDSP.push(docSP.data());
+          } else {
+            console.error('Không tìm thấy sản phẩm với ID:', idProduct.id_product);
+          }
+
+        } catch (error) {
+          console.error('Lỗi khi truy vấn sản phẩm:', error);
         }
+      })
 
-      }catch(error) {
-        console.error('Lỗi khi truy vấn sản phẩm:', error);
-      }
-    })
-
-  )
+    )
 
 
-    res.render('editHoaDon', { HoaDon,listCTHDSP,ChiTHd }); // Gửi thông tin booking để hiển thị lên form sửa
+
+    const tong = listCTHDSP.map((item, index) => ({
+      ...item,
+      soLuongct: ChiTHd[index].soluong
+    }));
+
+    const ngaydathoad = HoaDon.ngaydat
+    function timestampToFormattedDate(ngaydathoad) {
+      const date = new Date(ngaydathoad._seconds * 1000); // Chuyển đổi giây thành mili giây
+      const year = date.getFullYear().toString().slice(-2); // Lấy 2 chữ số cuối của năm
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0, nên cộng 1 và thêm số 0 nếu cần
+      const day = date.getDate().toString().padStart(2, '0');
+      return `${month}/${day}/${year}`;
+    }
+    
+    // Ví dụ:
+    const formattedDate = timestampToFormattedDate(ngaydathoad);
+    //  console.log(formattedDate); 
+
+
+
+
+
+    res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong,formattedDate }); // Gửi thông tin booking để hiển thị lên form sửa
   } catch (error) {
     console.error("Lỗi khi sửa HoaDon:", error);
     res.status(500).send('Lỗi khi sửa HoaDon');
@@ -77,15 +102,41 @@ router.post('/editHoaDon/:id', async (req, res) => {
   const { id } = req.params;
   const { trangthai } = req.body;
   try {
+
     const snapshot = await db.collection('HoaDon').where('id', '==', id).get();
+
     if (snapshot.empty) {
       return res.status(404).send('HoaDon không tìm thấy');
     }
     const docId = snapshot.docs[0].id;
-    await db.collection('HoaDon').doc(docId).update({
 
-      trangthai: parseInt(trangthai)
-    });
+    const HoaDon = snapshot.docs[0].data();
+
+
+    const ngaydathd = `${HoaDon.ngaydat}`
+    console.log(ngaydathd.length);
+
+    if (ngaydathd.length == 10) {
+      // Chuyển đổi chuỗi thành đối tượng Date
+      const ngayDatDate = new Date(HoaDon.ngaydat);
+      // Chuyển đổi đối tượng Date thành Timestamp
+      const ngayDatTimestamp = admin.firestore.Timestamp.fromDate(ngayDatDate);
+
+      console.log(ngayDatTimestamp);
+
+
+      await db.collection('HoaDon').doc(docId).update({
+
+        trangthai: parseInt(trangthai),
+        ngaydat: ngayDatTimestamp
+      });
+    }else{
+      await db.collection('HoaDon').doc(docId).update({
+
+        trangthai: parseInt(trangthai)
+      });
+    }
+
 
     res.redirect('/HoaDon'); // Quay lại danh sách booking sau khi sửa
   } catch (error) {

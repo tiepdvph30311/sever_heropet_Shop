@@ -39,7 +39,7 @@ router.post('/add', async (req, res) => {
       loaisp,
       hansudung,
       soluong: parseInt(soluong),
-      trongluong: trongluong,
+      trongluong,
       hinhanh,
       type: parseInt(type),
     };
