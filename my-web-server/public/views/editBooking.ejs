@@ -34,13 +34,16 @@
                 <form action="/bookings/editBooking/<%= booking.idcthdbooking %>" method="POST">
                     <div class="mb-3">
                         <label for="trangThai" class="form-label">Trạng Thái</label>
-                        <select class="form-select" id="trangThai" name="trangThai" required>
+                        <select class="form-select" id="trangThai" name="trangThai" required <% if (booking.trangThai === 'Đã huỷ') { %> disabled <% } %>>
                             <option value="Đã xác nhận" <%= booking.trangThai === 'Đã xác nhận' ? 'selected' : '' %>>Đã xác nhận</option>
                             <option value="Đã huỷ" <%= booking.trangThai === 'Đã huỷ' ? 'selected' : '' %>>Đã huỷ</option>
                             <option value="Chưa xác nhận" <%= booking.trangThai === 'Chưa xác nhận' ? 'selected' : '' %>>Chưa xác nhận</option>
+                            <option value="Hoàn thành" <%= booking.trangThai === 'Hoàn thành' ? 'selected' : '' %>>Hoàn thành</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Cập nhật Trạng Thái</button>
+                    <% if (booking.trangThai !== 'Đã huỷ') { %>
+                        <button type="submit" class="btn btn-primary">Cập nhật Trạng Thái</button>
+                    <% } %>
                 </form>
             </div>
         </div>
