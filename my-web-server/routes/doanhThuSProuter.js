@@ -17,8 +17,8 @@ router.get('/', async (req, res) => {
     // const end = endDate ? new Date(endDate) : null;
     
 
-    const start = startDate ? moment(startDate, 'YYYY-DD-MM').startOf('day').toDate() : null;
-    const end = endDate ? moment(endDate, 'YYYY-DD-MM').endOf('day').toDate() : null;
+    const start = startDate ? moment(startDate, 'YYYY-MM-DD').startOf('day').toDate() : null;
+    const end = endDate ? moment(endDate, 'YYYY-MM-DD').endOf('day').toDate() : null;
 
 
 
