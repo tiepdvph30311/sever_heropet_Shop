@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     const end = endDate ? moment(endDate, 'YYYY-MM-DD').endOf('day').toDate() : null;
 
     // Tạo query Firestore để lọc theo thời gian và trạng thái "Đã xác nhận"
-    let query = db.collection('CTHDBooking').where('trangThai', '==', 'Hoàn thành'); // Thêm điều kiện lọc theo trạng thái
+    let query = db.collection('CTHDBooking').where('trangThai', '==', 'Đã xác nhận'); // Thêm điều kiện lọc theo trạng thái
 
     if (start && end) {
       query = query.where('thoiGianDatLich', '>=', admin.firestore.Timestamp.fromDate(start))

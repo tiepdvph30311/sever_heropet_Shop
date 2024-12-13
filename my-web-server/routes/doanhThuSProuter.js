@@ -13,16 +13,13 @@ router.get('/', async (req, res) => {
 
 
 
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
+    // const start = startDate ? new Date(startDate) : null;
+    // const end = endDate ? new Date(endDate) : null;
+    
 
-    // console.log(start,end);
-    // console.log(admin.firestore.Timestamp.fromDate(ngay));
-    // const ngay = "2024-12-12"
-    // const ngayDatDate = new Date(ngay);
-    // // Chuyển đổi đối tượng Date thành Timestamp
-    // const ngayDatTimestamp = admin.firestore.Timestamp.fromDate(start);
-    // console.log(ngayDatTimestamp);
+    const start = startDate ? moment(startDate, 'YYYY-DD-MM').startOf('day').toDate() : null;
+    const end = endDate ? moment(endDate, 'YYYY-DD-MM').endOf('day').toDate() : null;
+
 
 
 

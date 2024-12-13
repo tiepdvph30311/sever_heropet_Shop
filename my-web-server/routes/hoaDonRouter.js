@@ -74,6 +74,10 @@ router.get('/editHoaDon/:id', async (req, res) => {
       soLuongct: ChiTHd[index].soluong
     }));
 
+    const ngaydathd = `${HoaDon.ngaydat}`
+
+
+
     const ngaydathoad = HoaDon.ngaydat
     function timestampToFormattedDate(ngaydathoad) {
       const date = new Date(ngaydathoad._seconds * 1000); // Chuyển đổi giây thành mili giây
@@ -84,14 +88,22 @@ router.get('/editHoaDon/:id', async (req, res) => {
     }
     
     // Ví dụ:
-    const formattedDate = timestampToFormattedDate(ngaydathoad);
     //  console.log(formattedDate); 
 
 
 
+    if(ngaydathd.length==10){
 
+      
+    const formattedDate = ngaydathd
+    res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong,formattedDate });
+    }else{
+      
+    const formattedDate = timestampToFormattedDate(ngaydathoad);
+    
+    res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong,formattedDate });
+    }
 
-    res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong,formattedDate }); // Gửi thông tin booking để hiển thị lên form sửa
   } catch (error) {
     console.error("Lỗi khi sửa HoaDon:", error);
     res.status(500).send('Lỗi khi sửa HoaDon');
@@ -114,7 +126,6 @@ router.post('/editHoaDon/:id', async (req, res) => {
 
 
     const ngaydathd = `${HoaDon.ngaydat}`
-    console.log(ngaydathd.length);
 
     if (ngaydathd.length == 10) {
       // Chuyển đổi chuỗi thành đối tượng Date
@@ -122,7 +133,6 @@ router.post('/editHoaDon/:id', async (req, res) => {
       // Chuyển đổi đối tượng Date thành Timestamp
       const ngayDatTimestamp = admin.firestore.Timestamp.fromDate(ngayDatDate);
 
-      console.log(ngayDatTimestamp);
 
 
       await db.collection('HoaDon').doc(docId).update({
