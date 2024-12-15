@@ -28,8 +28,8 @@ router.get('/', async (req, res) => {
     let query = db.collection('HoaDon').where('trangthai', '==', 3); // Thêm điều kiện lọc theo trạng thái
 
     if (start && end) {
-      query = query.where('ngaydat', '>=', admin.firestore.Timestamp.fromDate(start))
-        .where('ngaydat', '<=', admin.firestore.Timestamp.fromDate(end));
+      query = query.where('ngaydatfirebase', '>=', admin.firestore.Timestamp.fromDate(start))
+        .where('ngaydatfirebase', '<=', admin.firestore.Timestamp.fromDate(end));
     }
 
 
@@ -114,17 +114,17 @@ router.get('/chitietdoanhthu/:id', async (req, res) => {
     const HoaDon = snapshot.docs[0].data();
 
 
-    const ngaydathoad = HoaDon.ngaydat
-    function timestampToFormattedDate(ngaydathoad) {
-      const date = new Date(ngaydathoad._seconds * 1000); // Chuyển đổi giây thành mili giây
-      const year = date.getFullYear().toString().slice(-2); // Lấy 2 chữ số cuối của năm
-      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0, nên cộng 1 và thêm số 0 nếu cần
-      const day = date.getDate().toString().padStart(2, '0');
-      return `${month}/${day}/${year}`;
-    }
+    // const ngaydathoad = HoaDon.ngaydat
+    // function timestampToFormattedDate(ngaydathoad) {
+    //   const date = new Date(ngaydathoad._seconds * 1000); // Chuyển đổi giây thành mili giây
+    //   const year = date.getFullYear().toString().slice(-2); // Lấy 2 chữ số cuối của năm
+    //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0, nên cộng 1 và thêm số 0 nếu cần
+    //   const day = date.getDate().toString().padStart(2, '0');
+    //   return `${month}/${day}/${year}`;
+    // }
     
     // Ví dụ:
-    const formattedDate = timestampToFormattedDate(ngaydathoad);
+    // const formattedDate = timestampToFormattedDate(ngaydathoad);
     // console.log(formattedDate); 
     // console.log(HoaDon.ngaydat);
     
@@ -175,7 +175,7 @@ router.get('/chitietdoanhthu/:id', async (req, res) => {
 
 
 
-    res.render('chitietdoanhthusp', { HoaDon, listCTHDSP, ChiTHd, tong,formattedDate }); // Gửi thông tin booking để hiển thị lên form sửa
+    res.render('chitietdoanhthusp', { HoaDon, listCTHDSP, ChiTHd, tong }); // Gửi thông tin booking để hiển thị lên form sửa
   } catch (error) {
     console.error("Lỗi khi sửa HoaDon:", error);
     res.status(500).send('Lỗi khi sửa HoaDon');

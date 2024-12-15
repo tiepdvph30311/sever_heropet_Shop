@@ -79,31 +79,33 @@ router.get('/editHoaDon/:id', async (req, res) => {
 
 
 
-    const ngaydathoad = HoaDon.ngaydat
-    function timestampToFormattedDate(ngaydathoad) {
-      const date = new Date(ngaydathoad._seconds * 1000); // Chuyển đổi giây thành mili giây
-      const year = date.getFullYear().toString().slice(-2); // Lấy 2 chữ số cuối của năm
-      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0, nên cộng 1 và thêm số 0 nếu cần
-      const day = date.getDate().toString().padStart(2, '0');
-      return `${month}/${day}/${year}`;
-    }
+    // const ngaydathoad = HoaDon.ngaydat
+    // function timestampToFormattedDate(ngaydathoad) {
+    //   const date = new Date(ngaydathoad._seconds * 1000); // Chuyển đổi giây thành mili giây
+    //   const year = date.getFullYear().toString().slice(-2); // Lấy 2 chữ số cuối của năm
+    //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0, nên cộng 1 và thêm số 0 nếu cần
+    //   const day = date.getDate().toString().padStart(2, '0');
+    //   return `${month}/${day}/${year}`;
+    // }
 
     // Ví dụ:
     //  console.log(formattedDate); 
 
 
 
-    if (ngaydathd.length == 10) {
+    // if (ngaydathd.length == 10) {
 
 
-      const formattedDate = ngaydathd
-      res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong, formattedDate });
-    } else {
+    //   const formattedDate = ngaydathd
+    //   res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong, formattedDate });
+    // } else {
 
-      const formattedDate = timestampToFormattedDate(ngaydathoad);
+    //   const formattedDate = timestampToFormattedDate(ngaydathoad);
 
-      res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong, formattedDate });
-    }
+    //   res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong, formattedDate });
+    // }
+    
+    res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong });
 
   } catch (error) {
     console.error("Lỗi khi sửa HoaDon:", error);
@@ -126,15 +128,10 @@ router.post('/editHoaDon/:id', async (req, res) => {
     const HoaDon = snapshot.docs[0].data();
 
 
-    const ngaydathd = `${HoaDon.ngaydat}`
+    const ngaydathd = `${HoaDon.ngaydatfirebase}`
 
     if (ngaydathd.length == 10) {
-      // // Chuyển đổi chuỗi thành đối tượng Date
-      // const ngayDatDate = new Date(HoaDon.ngaydat);
-      // // Chuyển đổi đối tượng Date thành Timestamp
-      // const ngayDatTimestamp = admin.firestore.Timestamp.fromDate(ngayDatDate);
-
-      // Chuyển đổi chuỗi thành đối tượng Date và thiết lập múi giờ
+      
       const parts = ngaydathd.split('/');
       const date = new Date(parts[2], parts[1] - 1, parts[0]);
       date.setUTCHours(date.getUTCHours() + 7); // Thiết lập múi giờ UTC+7
@@ -146,7 +143,7 @@ router.post('/editHoaDon/:id', async (req, res) => {
       await db.collection('HoaDon').doc(docId).update({
 
         trangthai: parseInt(trangthai),
-        ngaydat: timestamp
+        ngaydatfirebase: timestamp
       });
     } else {
       await db.collection('HoaDon').doc(docId).update({
