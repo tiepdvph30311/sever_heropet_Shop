@@ -113,52 +113,53 @@ router.get('/editHoaDon/:id', async (req, res) => {
   }
 });
 
-router.post('/editHoaDon/:id', async (req, res) => {
-  const { id } = req.params;
-  const { trangthai } = req.body;
-  try {
+// router.post('/editHoaDon/:id', async (req, res) => {
 
-    const snapshot = await db.collection('HoaDon').where('id', '==', id).get();
+//   const { id } = req.params;
+//   const { trangthai } = req.body;
+//   try {
 
-    if (snapshot.empty) {
-      return res.status(404).send('HoaDon không tìm thấy');
-    }
-    const docId = snapshot.docs[0].id;
+//     const snapshot = await db.collection('HoaDon').where('id', '==', id).get();
 
-    const HoaDon = snapshot.docs[0].data();
+//     if (snapshot.empty) {
+//       return res.status(404).send('HoaDon không tìm thấy');
+//     }
+//     const docId = snapshot.docs[0].id;
+
+//     const HoaDon = snapshot.docs[0].data();
 
 
-    const ngaydathd = `${HoaDon.ngaydatfirebase}`
+//     const ngaydathd = `${HoaDon.ngaydatfirebase}`
 
-    if (ngaydathd.length == 10) {
+//     if (ngaydathd.length == 10) {
       
-      const parts = ngaydathd.split('/');
-      const date = new Date(parts[2], parts[1] - 1, parts[0]);
-      date.setUTCHours(date.getUTCHours() + 7); // Thiết lập múi giờ UTC+7
+//       const parts = ngaydathd.split('/');
+//       const date = new Date(parts[2], parts[1] - 1, parts[0]);
+//       date.setUTCHours(date.getUTCHours() + 7); // Thiết lập múi giờ UTC+7
 
-      // Tạo Timestamp
-      const timestamp = new Date(date);
+//       // Tạo Timestamp
+//       const timestamp = new Date(date);
       
       
-      await db.collection('HoaDon').doc(docId).update({
+//       await db.collection('HoaDon').doc(docId).update({
 
-        trangthai: parseInt(trangthai),
-        ngaydatfirebase: timestamp
-      });
-    } else {
-      await db.collection('HoaDon').doc(docId).update({
+//         trangthai: parseInt(trangthai),
+//         ngaydatfirebase: timestamp
+//       });
+//     } else {
+//       await db.collection('HoaDon').doc(docId).update({
 
-        trangthai: parseInt(trangthai)
-      });
-    }
+//         trangthai: parseInt(trangthai)
+//       });
+//     }
 
 
-    res.redirect('/HoaDon'); // Quay lại danh sách booking sau khi sửa
-  } catch (error) {
-    console.error("Lỗi khi cập nhật HoaDon:", error);
-    res.status(500).send('Lỗi khi cập nhật HoaDon');
-  }
-});
+//     res.redirect('/HoaDon'); // Quay lại danh sách booking sau khi sửa
+//   } catch (error) {
+//     console.error("Lỗi khi cập nhật HoaDon:", error);
+//     res.status(500).send('Lỗi khi cập nhật HoaDon');
+//   }
+// });
 
 
 
@@ -169,6 +170,58 @@ router.post('/editHoaDon/:id', async (req, res) => {
 
 
 // Xóa booking
+router.post('/editHoaDon/:id', async (req, res) => {
+  const { id } = req.params;
+  const { trangthai } = req.body;
+  
+  try {
+    const snapshot = await db.collection('HoaDon').where('id', '==', id).get();
+
+    if (snapshot.empty) {
+      return res.status(404).send('HoaDon không tìm thấy');
+    }
+
+    const docId = snapshot.docs[0].id;  // Lấy document ID
+    const HoaDon = snapshot.docs[0].data(); // Lấy dữ liệu hóa đơn
+
+    // Xử lý ngày đặt hàng nếu cần
+    const ngaydathd = `${HoaDon.ngaydatfirebase}`;
+    if (ngaydathd.length == 10) {
+      const parts = ngaydathd.split('/');
+      const date = new Date(parts[2], parts[1] - 1, parts[0]);
+      date.setUTCHours(date.getUTCHours() + 7); // Thiết lập múi giờ UTC+7
+
+      const timestamp = new Date(date);
+
+      // Cập nhật trạng thái và ngày đặt hàng
+      await db.collection('HoaDon').doc(docId).update({
+        trangthai: parseInt(trangthai),
+        ngaydatfirebase: timestamp
+      });
+    } else {
+      // Chỉ cập nhật trạng thái
+      await db.collection('HoaDon').doc(docId).update({
+        trangthai: parseInt(trangthai)
+      });
+    }
+
+    // **Thêm thông báo nếu trạng thái là "Giao hàng thành công"**
+    if (parseInt(trangthai) === 3) { // Giả sử 3 là "Giao hàng thành công"
+      const notificationMessage = `Đơn hàng ${id} đã được giao thành công!`;
+
+      await db.collection('Notifications').add({
+        message: notificationMessage,
+        createdAt: admin.firestore.FieldValue.serverTimestamp() // Thời gian tạo thông báo
+      });
+    }
+
+    res.redirect('/HoaDon'); // Quay lại danh sách hóa đơn sau khi sửa
+  } catch (error) {
+    console.error("Lỗi khi cập nhật HoaDon:", error);
+    res.status(500).send('Lỗi khi cập nhật HoaDon');
+  }
+});
+
 router.get('/deleteBooking/:idBooking', async (req, res) => {
   const { idBooking } = req.params;
   try {
