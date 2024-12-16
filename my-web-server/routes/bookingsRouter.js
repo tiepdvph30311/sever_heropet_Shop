@@ -4,17 +4,49 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 
 // Đường dẫn đến danh sách bookings
+// router.get('/', async (req, res) => {
+//     try {
+//         const snapshot = await db.collection('CTHDBooking').get();
+//         const bookings = snapshot.docs.map(doc => doc.data());
+//         res.render('bookings', { bookings });
+//     } catch (error) {
+//         console.error("Lỗi khi tải danh sách bookings:", error);
+//         res.status(500).send('Lỗi khi tải danh sách bookings');
+//     }
+// });
 router.get('/', async (req, res) => {
     try {
-        const snapshot = await db.collection('CTHDBooking').get();
-        const bookings = snapshot.docs.map(doc => doc.data());
-        res.render('bookings', { bookings });
+      const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+      const pageSize = 10; // Số lượng phần tử trên mỗi trang
+  
+      const startAt = (page - 1) * pageSize;
+  
+      // Lấy danh sách booking có phân trang
+      const snapshot = await db.collection('CTHDBooking')
+                               .orderBy('thoiGianDatLich') // Sắp xếp theo thời gian đặt lịch
+                               .offset(startAt)
+                               .limit(pageSize)
+                               .get();
+  
+      const bookings = snapshot.docs.map(doc => doc.data());
+  
+      // Tính tổng số lượng bản ghi
+      const totalSnapshot = await db.collection('CTHDBooking').get();
+      const totalRecords = totalSnapshot.size;
+      const totalPages = Math.ceil(totalRecords / pageSize);
+  
+      // Truyền biến sang EJS
+      res.render('bookings', {
+        bookings,
+        currentPage: page,
+        totalPages: totalPages
+      });
     } catch (error) {
-        console.error("Lỗi khi tải danh sách bookings:", error);
-        res.status(500).send('Lỗi khi tải danh sách bookings');
+      console.error("Lỗi khi tải danh sách bookings:", error);
+      res.status(500).send('Lỗi khi tải danh sách bookings');
     }
-});
-
+  });
+  
 // Sửa booking
 router.get('/editBooking/:idcthdbooking', async (req, res) => {
     const { idcthdbooking } = req.params;
