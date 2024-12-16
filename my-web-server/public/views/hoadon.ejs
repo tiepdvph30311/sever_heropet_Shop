@@ -87,7 +87,30 @@
           </tbody>
         </table>
       </div>
-     
+      <nav aria-label="Page navigation example" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <!-- Nút Trang Trước -->
+          <% if (currentPage > 1) { %>
+            <li class="page-item">
+              <a class="page-link" href="?page=<%= currentPage - 1 %>">&laquo; Trang Trước</a>
+            </li>
+          <% } %>
+      
+          <!-- Hiển thị từng trang -->
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+              <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+            </li>
+          <% } %>
+      
+          <!-- Nút Trang Tiếp -->
+          <% if (currentPage < totalPages) { %>
+            <li class="page-item">
+              <a class="page-link" href="?page=<%= currentPage + 1 %>">Trang Tiếp &raquo;</a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
     </div>
     </div>
   </div>

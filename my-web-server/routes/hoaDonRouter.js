@@ -9,14 +9,35 @@ const moment = require('moment')
 // Đường dẫn đến danh sách bookings
 router.get('/', async (req, res) => {
   try {
-    const snapshot = await db.collection('HoaDon').get();
-    const HoaDon = snapshot.docs.map(doc => doc.data());
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại
+    const limit = 10; // Số hóa đơn trên mỗi trang
+    const startAt = (page - 1) * limit; // Vị trí bắt đầu
 
-    // Render dữ liệu vào template (có thể dùng EJS, Pug, hoặc gửi dưới dạng JSON)
-    res.render('HoaDon', { HoaDon });
+    // Lấy danh sách hóa đơn theo phân trang
+    const snapshot = await db.collection('HoaDon')
+      .offset(startAt)
+      .limit(limit)
+      .get();
+
+    const HoaDon = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    // Tính tổng số hóa đơn
+    const totalSnapshot = await db.collection('HoaDon').get();
+    const totalDocuments = totalSnapshot.size;
+    const totalPages = Math.ceil(totalDocuments / limit);
+
+    // Render và truyền dữ liệu vào EJS
+    res.render('HoaDon', { 
+      HoaDon,
+      currentPage: page, 
+      totalPages 
+    });
   } catch (error) {
-    console.error("Lỗi khi tải danh sách HoaDon:", error);  // Log lỗi chi tiết
-    res.status(500).send('Lỗi khi tải danh sách HoaDon');
+    console.error("Lỗi khi tải danh sách Hóa Đơn:", error);
+    res.status(500).send('Lỗi khi tải danh sách Hóa Đơn');
   }
 });
 
