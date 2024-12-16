@@ -64,22 +64,30 @@ router.get('/', async (req, res) => {
 
     function calculateTotalAmount(HoaDon) {
       return HoaDon.reduce((total, order) => {
-        // Kiểm tra xem tongtien có phải là chuỗi số hợp lệ không
-        if (typeof order.tongtien !== 'string') {
-          console.error('Giá trị tongtien không phải là chuỗi');
-          return total; // Bỏ qua phần tử này nếu không hợp lệ
+        let amount = 0;
+    
+        if (typeof order.tongtien === 'string') {
+          // Thay thế dấu '.' thành rỗng (xóa dấu phân cách hàng nghìn)
+          const sanitizedValue = order.tongtien.replace(/\./g, '');
+          amount = Number(sanitizedValue); // Chuyển thành số nguyên
+        } else if (typeof order.tongtien === 'number') {
+          amount = order.tongtien;
+        } else {
+          console.error('Giá trị tongtien không hợp lệ:', order.tongtien);
+          return total; // Bỏ qua giá trị không hợp lệ
         }
-
-        // Loại bỏ tất cả dấu phẩy và chuyển thành số
-        const amount = Number(order.tongtien.replace(/,/g, ''));
+    
         if (isNaN(amount)) {
           console.error('Không thể chuyển đổi thành số:', order.tongtien);
-          return total; // Bỏ qua phần tử này nếu không thể chuyển đổi
+          return total; // Bỏ qua nếu lỗi
         }
-
+    
         return total + amount;
       }, 0);
     }
+    
+    
+    
 
     const totalAmount = calculateTotalAmount(HoaDon);
 

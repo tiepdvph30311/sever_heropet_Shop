@@ -80,12 +80,15 @@
                       <% } %>
 
 
-                        <tr>
-                          <td colspan="4" class="table-active text-center">
-                            <h5>Tổng tiền: <%= totalAmount %> VND</h5>
-                          </td>
-
-                        </tr>
+                      <tr>
+                        <td colspan="4" class="table-active text-center">
+                          <h5>
+                            Tổng tiền: <%= totalAmount.toLocaleString('vi-VN') %> VND
+                          </h5>
+                        </td>
+                      </tr>
+                      
+                      
 
             </tbody>
           </table>

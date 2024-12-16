@@ -170,57 +170,134 @@ router.get('/editHoaDon/:id', async (req, res) => {
 
 
 // Xóa booking
+// router.post('/editHoaDon/:id', async (req, res) => {
+//   const { id } = req.params;
+//   const { trangthai } = req.body;
+  
+//   try {
+//     const snapshot = await db.collection('HoaDon').where('id', '==', id).get();
+
+//     if (snapshot.empty) {
+//       return res.status(404).send('HoaDon không tìm thấy');
+//     }
+
+//     const docId = snapshot.docs[0].id;  // Lấy document ID
+//     const HoaDon = snapshot.docs[0].data(); // Lấy dữ liệu hóa đơn
+
+//     // Xử lý ngày đặt hàng nếu cần
+//     const ngaydathd = `${HoaDon.ngaydatfirebase}`;
+//     if (ngaydathd.length == 10) {
+//       const parts = ngaydathd.split('/');
+//       const date = new Date(parts[2], parts[1] - 1, parts[0]);
+//       date.setUTCHours(date.getUTCHours() + 7); // Thiết lập múi giờ UTC+7
+
+//       const timestamp = new Date(date);
+
+//       // Cập nhật trạng thái và ngày đặt hàng
+//       await db.collection('HoaDon').doc(docId).update({
+//         trangthai: parseInt(trangthai),
+//         ngaydatfirebase: timestamp
+//       });
+//     } else {
+//       // Chỉ cập nhật trạng thái
+//       await db.collection('HoaDon').doc(docId).update({
+//         trangthai: parseInt(trangthai)
+//       });
+//     }
+
+//     // **Thêm thông báo nếu trạng thái là "Giao hàng thành công"**
+//     if (parseInt(trangthai) === 3) { // Giả sử 3 là "Giao hàng thành công"
+//       const notificationMessage = `Đơn hàng ${id} đã được giao thành công!`;
+
+//       await db.collection('Notifications').add({
+//         message: notificationMessage,
+//         createdAt: admin.firestore.FieldValue.serverTimestamp() // Thời gian tạo thông báo
+//       });
+//     }
+
+//     res.redirect('/HoaDon'); // Quay lại danh sách hóa đơn sau khi sửa
+//   } catch (error) {
+//     console.error("Lỗi khi cập nhật HoaDon:", error);
+//     res.status(500).send('Lỗi khi cập nhật HoaDon');
+//   }
+// });
+
 router.post('/editHoaDon/:id', async (req, res) => {
   const { id } = req.params;
   const { trangthai } = req.body;
-  
+
   try {
     const snapshot = await db.collection('HoaDon').where('id', '==', id).get();
 
     if (snapshot.empty) {
-      return res.status(404).send('HoaDon không tìm thấy');
+      return res.status(404).send('Hóa đơn không tìm thấy');
     }
 
-    const docId = snapshot.docs[0].id;  // Lấy document ID
+    const docId = snapshot.docs[0].id; // Lấy document ID
     const HoaDon = snapshot.docs[0].data(); // Lấy dữ liệu hóa đơn
 
-    // Xử lý ngày đặt hàng nếu cần
-    const ngaydathd = `${HoaDon.ngaydatfirebase}`;
-    if (ngaydathd.length == 10) {
-      const parts = ngaydathd.split('/');
-      const date = new Date(parts[2], parts[1] - 1, parts[0]);
-      date.setUTCHours(date.getUTCHours() + 7); // Thiết lập múi giờ UTC+7
+    // Cập nhật trạng thái hóa đơn
+    await db.collection('HoaDon').doc(docId).update({
+      trangthai: parseInt(trangthai)
+    });
 
-      const timestamp = new Date(date);
+    // Nếu trạng thái là "Giao hàng thành công" (3), trừ số lượng sản phẩm
+    if (parseInt(trangthai) === 3) {
+      // Lấy thông tin chi tiết hóa đơn từ collection ChitietHoaDon
+      const cthdSnapshot = await db.collection('ChitietHoaDon')
+        .doc(HoaDon.UID)  // Document chứa subcollection ALL
+        .collection('ALL')  
+        .where('id_hoadon', '==', id)
+        .get();
 
-      // Cập nhật trạng thái và ngày đặt hàng
-      await db.collection('HoaDon').doc(docId).update({
-        trangthai: parseInt(trangthai),
-        ngaydatfirebase: timestamp
-      });
-    } else {
-      // Chỉ cập nhật trạng thái
-      await db.collection('HoaDon').doc(docId).update({
-        trangthai: parseInt(trangthai)
-      });
-    }
+      const chiTietHoaDon = cthdSnapshot.docs.map(doc => doc.data());
 
-    // **Thêm thông báo nếu trạng thái là "Giao hàng thành công"**
-    if (parseInt(trangthai) === 3) { // Giả sử 3 là "Giao hàng thành công"
-      const notificationMessage = `Đơn hàng ${id} đã được giao thành công!`;
+      // Trừ số lượng sản phẩm trong collection SanPham
+      await Promise.all(
+        chiTietHoaDon.map(async (item) => {
+          const productRef = db.collection('SanPham').doc(item.id_product);
 
+          try {
+            const productSnap = await productRef.get();
+
+            if (productSnap.exists) {
+              const productData = productSnap.data();
+              const currentQuantity = productData.soluong || 0;
+
+              const newQuantity = currentQuantity - item.soLuong;
+
+              if (newQuantity < 0) {
+                console.warn(`Sản phẩm ${item.id_product} có số lượng không đủ.`);
+              }
+
+              // Cập nhật số lượng sản phẩm trong kho
+              await productRef.update({
+                soLuong: Math.max(newQuantity, 0) // Đảm bảo không giảm dưới 0
+              });
+            } else {
+              console.error(`Sản phẩm ${item.id_product} không tồn tại.`);
+            }
+          } catch (error) {
+            console.error(`Lỗi khi cập nhật số lượng sản phẩm ${item.id_product}:`, error);
+          }
+        })
+      );
+
+      // Thêm thông báo vào bảng Notifications
+      const notificationMessage = `Đơn hàng ${id} đã được giao thành công và số lượng sản phẩm đã được cập nhật!`;
       await db.collection('Notifications').add({
         message: notificationMessage,
-        createdAt: admin.firestore.FieldValue.serverTimestamp() // Thời gian tạo thông báo
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
       });
     }
 
-    res.redirect('/HoaDon'); // Quay lại danh sách hóa đơn sau khi sửa
+    res.redirect('/HoaDon'); // Quay lại danh sách hóa đơn
   } catch (error) {
-    console.error("Lỗi khi cập nhật HoaDon:", error);
-    res.status(500).send('Lỗi khi cập nhật HoaDon');
+    console.error("Lỗi khi cập nhật hóa đơn và trừ số lượng sản phẩm:", error);
+    res.status(500).send('Lỗi khi cập nhật hóa đơn và trừ số lượng sản phẩm');
   }
 });
+
 
 router.get('/deleteBooking/:idBooking', async (req, res) => {
   const { idBooking } = req.params;
