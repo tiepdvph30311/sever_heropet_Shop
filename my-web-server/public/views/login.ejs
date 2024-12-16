@@ -55,8 +55,13 @@
 </head>
 
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
-
+ 
   <main class="form-signin w-100 m-auto border border-secondary btn-bd-primary">
+    <% if (typeof message !== 'undefined') { %>
+      <div class="error-message">
+        <%= message %>
+      </div>
+    <% } %>
 
     <form action="/login" method="POST">
       <h1 class="h1 mb-3 fw-normal" style="color: white;">Đăng Nhập</h1>

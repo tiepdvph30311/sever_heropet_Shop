@@ -81,7 +81,7 @@ app.post('/login', async (req, res) => {
 
     // Nếu không tìm thấy tài khoản khớp
     if (!found) {
-      return res.status(401).send('Invalid username or password');
+      return res.render('login', { message: 'Đăng Nhập thất bại tài khoản hoặc mật khẩu không chình xác.' });
     }
 
   } catch (error) {
