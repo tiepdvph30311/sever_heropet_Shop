@@ -119,8 +119,13 @@ app.use('/HoaDon', HoaDon);
 const doanhthusp = require('./routes/doanhThuSProuter');
 app.use('/doanhthusp', doanhthusp);
 
+
 const notificationsRouter = require('./routes/notificationsRouter');
 app.use('/notifications', notificationsRouter);
+
+
+
+
 // Khởi động server
 
 const port = 3000;

@@ -16,37 +16,37 @@ const db = admin.firestore();
 // });
 router.get('/', async (req, res) => {
     try {
-      const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
-      const pageSize = 10; // Số lượng phần tử trên mỗi trang
-  
-      const startAt = (page - 1) * pageSize;
-  
-      // Lấy danh sách booking có phân trang
-      const snapshot = await db.collection('CTHDBooking')
-                               .orderBy('thoiGianDatLich') // Sắp xếp theo thời gian đặt lịch
-                               .offset(startAt)
-                               .limit(pageSize)
-                               .get();
-  
-      const bookings = snapshot.docs.map(doc => doc.data());
-  
-      // Tính tổng số lượng bản ghi
-      const totalSnapshot = await db.collection('CTHDBooking').get();
-      const totalRecords = totalSnapshot.size;
-      const totalPages = Math.ceil(totalRecords / pageSize);
-  
-      // Truyền biến sang EJS
-      res.render('bookings', {
-        bookings,
-        currentPage: page,
-        totalPages: totalPages
-      });
+        const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+        const pageSize = 10; // Số lượng phần tử trên mỗi trang
+
+        const startAt = (page - 1) * pageSize;
+
+        // Lấy danh sách booking có phân trang
+        const snapshot = await db.collection('CTHDBooking')
+            .orderBy('thoiGianDatLich') // Sắp xếp theo thời gian đặt lịch
+            .offset(startAt)
+            .limit(pageSize)
+            .get();
+
+        const bookings = snapshot.docs.map(doc => doc.data());
+
+        // Tính tổng số lượng bản ghi
+        const totalSnapshot = await db.collection('CTHDBooking').get();
+        const totalRecords = totalSnapshot.size;
+        const totalPages = Math.ceil(totalRecords / pageSize);
+
+        // Truyền biến sang EJS
+        res.render('bookings', {
+            bookings,
+            currentPage: page,
+            totalPages: totalPages
+        });
     } catch (error) {
-      console.error("Lỗi khi tải danh sách bookings:", error);
-      res.status(500).send('Lỗi khi tải danh sách bookings');
+        console.error("Lỗi khi tải danh sách bookings:", error);
+        res.status(500).send('Lỗi khi tải danh sách bookings');
     }
-  });
-  
+});
+
 // Sửa booking
 router.get('/editBooking/:idcthdbooking', async (req, res) => {
     const { idcthdbooking } = req.params;
@@ -56,6 +56,16 @@ router.get('/editBooking/:idcthdbooking', async (req, res) => {
             return res.status(404).send('Booking không tìm thấy');
         }
         const booking = snapshot.docs[0].data();
+        const doccthd = await db.collection('User')
+            .doc(booking.iduser)  // Document chứa subcollection ALL
+            .collection('Profile')
+            .get()
+
+            
+        const bookinguid = doccthd.docs[0].data();
+        
+        console.log(bookinguid);
+
         res.render('editBooking', { booking }); // Gửi thông tin booking để hiển thị lên form sửa
     } catch (error) {
         console.error("Lỗi khi sửa booking:", error);
@@ -72,6 +82,7 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
             return res.status(404).send('Booking không tìm thấy');
         }
         const docId = snapshot.docs[0].id;
+
 
         // Cập nhật trạng thái
         await db.collection('CTHDBooking').doc(docId).update({
