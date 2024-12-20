@@ -6,61 +6,82 @@
   <title>Thống Kê Doanh Thu</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .main-content{
+    .main-content {
       margin-left: 210px;
     }
- 
   </style>
 </head>
 <body>
-    <div class="d-flex position-relative">
-    
-        <%- include('../views/hader.ejs') %>
-          <div class="main-content">
-  <div class="container mt-5">
-    <h1 class="text-center">Thống Kê Doanh Thu Dịch vụ</h1>
-    <form action="/doanhthu" method="GET" class="mb-4">
-      <div class="row">
-        <div class="col">
-          <input type="date" name="startDate" class="form-control" value="<%= startDate %>" required>
-        </div>
-        <div class="col">
-          <input type="date" name="endDate" class="form-control" value="<%= endDate %>" required>
-        </div>
-        <div class="col">
-          <button type="submit" class="btn btn-primary">Lọc</button>
-        </div>
-      </div>
-    </form>
+  <div class="d-flex position-relative">
+    <%- include('../views/hader.ejs') %>
+    <div class="main-content">
+      <div class="container mt-5">
+        <!-- Form lọc -->
+        <h1 class="text-center mb-4">Thống Kê Doanh Thu Dịch Vụ</h1>
+        <form action="/doanhthu" method="GET" class="mb-4">
+          <div class="row">
+            <div class="col">
+              <input type="date" name="startDate" class="form-control" value="<%= startDate %>" required>
+            </div>
+            <div class="col">
+              <input type="date" name="endDate" class="form-control" value="<%= endDate %>" required>
+            </div>
+            <div class="col">
+              <button type="submit" class="btn btn-primary">Lọc</button>
+            </div>
+          </div>
+        </form>
 
-    <!-- Table để hiển thị thống kê -->
-    <table class="table table-bordered table-striped table-hover">
-      <thead class="table-dark">
-        <tr>
-          <th>Tên Dịch Vụ</th>
-          <th>Số Lượng</th>
-          <th>Tổng Doanh Thu</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (serviceUsage && serviceUsage.length > 0) { %> 
-          <% serviceUsage.forEach(service => { %>
+        <!-- Bảng hiển thị thống kê doanh thu -->
+        <h3 class="text-center">Thống Kê Doanh Thu</h3>
+        <table class="table table-bordered table-striped table-hover">
+          <thead class="table-dark">
             <tr>
-              <td><%= service.serviceName %></td>
-              <td><%= service.quantity %></td>
-              <td><%= service.totalRevenue %> VND</td>
+              <th>Tên Dịch Vụ</th>
+              <th>Số Lượng</th>
+              <th>Tổng Doanh Thu</th>
             </tr>
-          <% }) %>
-        <% } else { %>
-          <tr><td colspan="3" class="text-center text-muted">Không có dữ liệu trong khoảng thời gian này.</td></tr>
-        <% } %>
-      </tbody>
-    </table>
+          </thead>
+          <tbody>
+            <% if (serviceUsage && serviceUsage.length > 0) { %>
+              <% serviceUsage.forEach(service => { %>
+                <tr>
+                  <td><%= service.serviceName %></td>
+                  <td><%= service.quantity %></td>
+                  <td><%= service.totalRevenue.toLocaleString('vi-VN') %> VND</td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td colspan="3" class="text-center text-muted">Không có dữ liệu trong khoảng thời gian này.</td></tr>
+            <% } %>
+          </tbody>
+        </table>
 
-    <h3>Tổng Doanh Thu: <%= totalRevenue %> VND</h3>
+        <!-- Bảng hiển thị top sản phẩm -->
+        <h3 class="text-center mt-5">Top Sản Phẩm</h3>
+        <table class="table table-bordered table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Tên Dịch Vụ</th>
+              <th>Số Lượng</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (topServices && topServices.length > 0) { %>
+              <% topServices.forEach(service => { %>
+                <tr>
+                  <td><%= service.serviceName %></td>
+                  <td><%= service.quantity %></td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td colspan="2" class="text-center text-muted">Không có dữ liệu</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-</div>
-</div>
   <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,20 +5,17 @@ const db = admin.firestore();
 
 router.get('/', async (req, res) => {
     try {
-        const userSnapshot = await db.collection('User').get(); // Lấy toàn bộ User
-        const users = [];
-
-        for (const userDoc of userSnapshot.docs) {
-            const userId = userDoc.id; // ID tự động của User
-
-            // Truy cập collection 'Profile' của từng User
+        const userSnapshot = await db.collection('User').get(); // Get all users
+        const users = await Promise.all(userSnapshot.docs.map(async (userDoc) => {
+            const userId = userDoc.id; // User document ID
+            
+            // Fetch the first document in the Profile subcollection
             const profileSnapshot = await db.collection('User')
                 .doc(userId)
                 .collection('Profile')
-                .limit(1) // Lấy document đầu tiên trong Profile
+                .limit(1) // Fetch only the first document
                 .get();
 
-            // Thêm dữ liệu Profile hoặc gán mặc định
             let profileData = {
                 hoten: "Không xác định",
                 avatar: "",
@@ -32,13 +29,13 @@ router.get('/', async (req, res) => {
                 profileData = profileSnapshot.docs[0].data();
             }
 
-            users.push({
+            return {
                 id: userId,
                 ...profileData,
-            });
-        }
+            };
+        }));
 
-        // Render giao diện và truyền dữ liệu users
+        // Render view and pass user data
         res.render('nguoidung', { users });
     } catch (error) {
         console.error("Lỗi khi lấy dữ liệu Firestore:", error);
