@@ -123,8 +123,9 @@ app.use('/doanhthusp', doanhthusp);
 const notificationsRouter = require('./routes/notificationsRouter');
 app.use('/notifications', notificationsRouter);
 
-
-
+const nguoidung = require('./routes/nguoidungRouter');
+app.use('/nguoidung', nguoidung);
+app.use('/', bookingsRouter);
 
 // Khởi động server
 

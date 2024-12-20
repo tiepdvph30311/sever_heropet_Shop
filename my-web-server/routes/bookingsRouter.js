@@ -14,38 +14,160 @@ const db = admin.firestore();
 //         res.status(500).send('Lỗi khi tải danh sách bookings');
 //     }
 // });
+
+
+// router.get('/', async (req, res) => {
+//     try {
+//         const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
+//         const pageSize = 10; // Số lượng phần tử trên mỗi trang
+
+//         const startAt = (page - 1) * pageSize;
+
+//         // Lấy danh sách booking có phân trang và sắp xếp giảm dần theo thời gian đặt lịch
+//         const snapshot = await db.collection('CTHDBooking')
+//             .orderBy('thoiGianDatLich', 'desc') // Sắp xếp theo thời gian đặt lịch giảm dần
+//             .offset(startAt)
+//             .limit(pageSize)
+//             .get();
+
+//         let bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+//         // Lấy thông tin người dùng cho từng booking
+//         for (let booking of bookings) {
+//             if (booking.iduser) {
+//                 const userSnapshot = await db.collection('User')
+//                     .doc(booking.iduser)
+//                     .collection('Profile')
+//                     .get();
+
+//                 if (!userSnapshot.empty) {
+//                     const profileData = userSnapshot.docs[0].data();
+//                     booking.hoten = profileData.hoten || "Không xác định"; // Thêm tên người dùng
+//                     booking.sdt = profileData.sdt || "Không xác định";    // Thêm số điện thoại
+//                 } else {
+//                     booking.hoten = "Không xác định"; // Nếu không tìm thấy Profile
+//                     booking.sdt = "Không xác định";  // Nếu không tìm thấy số điện thoại
+//                 }
+//             } else {
+//                 booking.hoten = "Không xác định"; // Nếu không có iduser
+//                 booking.sdt = "Không xác định";  // Nếu không có iduser
+//             }
+//         }
+
+//         // Tính tổng số lượng bản ghi
+//         const totalSnapshot = await db.collection('CTHDBooking').get();
+//         const totalRecords = totalSnapshot.size;
+//         const totalPages = Math.ceil(totalRecords / pageSize);
+
+//         // Truyền biến sang EJS
+//         res.render('bookings', {
+//             bookings,
+//             currentPage: page,
+//             totalPages: totalPages
+//         });
+//     } catch (error) {
+//         console.error("Lỗi khi tải danh sách bookings:", error);
+//         res.status(500).send('Lỗi khi tải danh sách bookings');
+//     }
+// });
 router.get('/', async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; // Trang hiện tại, mặc định là 1
-        const pageSize = 10; // Số lượng phần tử trên mỗi trang
-
+        const page = parseInt(req.query.page) || 1; // Trang hiện tại
+        const pageSize = 5; // Số lượng phần tử trên mỗi trang
         const startAt = (page - 1) * pageSize;
 
-        // Lấy danh sách booking có phân trang
+        // Lấy danh sách bookings có phân trang
         const snapshot = await db.collection('CTHDBooking')
-            .orderBy('thoiGianDatLich') // Sắp xếp theo thời gian đặt lịch
+            .orderBy('thoiGianDatLich', 'desc') // Sắp xếp giảm dần
             .offset(startAt)
             .limit(pageSize)
             .get();
 
-        const bookings = snapshot.docs.map(doc => doc.data());
+        const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // Tính tổng số lượng bản ghi
+        // Lấy thông tin Profile từ User → Profile cho mỗi booking
+        for (let booking of bookings) {
+            if (booking.iduser) {
+                const profilesSnapshot = await db.collection('User')
+                    .doc(booking.iduser)
+                    .collection('Profile')
+                    .get();
+
+                if (!profilesSnapshot.empty) {
+                    const profileData = profilesSnapshot.docs[0].data();
+                    booking.hoten = profileData.hoten || 'Không xác định';
+                    booking.sdt = profileData.sdt || 'Không xác định';
+                } else {
+                    booking.hoten = 'Không xác định';
+                    booking.sdt = 'Không xác định';
+                }
+            } else {
+                booking.hoten = 'Không xác định';
+                booking.sdt = 'Không xác định';
+            }
+        }
+
+        // Tổng số lượng bản ghi
         const totalSnapshot = await db.collection('CTHDBooking').get();
         const totalRecords = totalSnapshot.size;
         const totalPages = Math.ceil(totalRecords / pageSize);
 
-        // Truyền biến sang EJS
         res.render('bookings', {
             bookings,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages,
+            hoten: '' // Giá trị mặc định của hoten
         });
     } catch (error) {
-        console.error("Lỗi khi tải danh sách bookings:", error);
+        console.error('Lỗi khi tải danh sách bookings:', error);
         res.status(500).send('Lỗi khi tải danh sách bookings');
     }
 });
+
+router.get('/search', async (req, res) => {
+    const { tenKhachHang } = req.query;
+    try {
+        // Lấy tất cả dữ liệu nếu không có tham số tìm kiếm
+        let bookingsSnapshot;
+        let isSearch = false;
+
+        if (tenKhachHang && tenKhachHang.trim() !== '') {
+            console.log("Đang tìm kiếm khách hàng với tên:", tenKhachHang.trim());
+            isSearch = true;
+
+            // Lọc theo tên khách hàng
+            bookingsSnapshot = await db.collection('CTHDBooking')
+                .where('tenKhachHang', '>=', tenKhachHang.trim())
+                .where('tenKhachHang', '<=', tenKhachHang.trim() + '\uf8ff')
+                .get();
+        } else {
+            // Lấy toàn bộ bookings nếu không tìm kiếm
+            bookingsSnapshot = await db.collection('CTHDBooking').get();
+        }
+
+        const bookings = bookingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        console.log("Danh sách bookings:", bookings);
+
+        // Hiển thị toàn bộ dữ liệu với điều kiện tìm kiếm hoặc không
+        res.render('bookings', {
+            bookings,
+            currentPage: 1,
+            totalPages: 1,
+            hoten: tenKhachHang || '', // Giá trị tìm kiếm (nếu có)
+            isSearch
+        });
+    } catch (error) {
+        console.error('Lỗi khi tìm kiếm bookings:', error);
+        res.status(500).send('Lỗi khi tìm kiếm bookings.');
+    }
+});
+
+
+
+
+
+
 
 // Sửa booking
 router.get('/editBooking/:idcthdbooking', async (req, res) => {
