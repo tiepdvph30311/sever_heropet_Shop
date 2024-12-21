@@ -32,8 +32,8 @@
                 </tr>
             </thead>
             <tbody>
-                <% if (users && users.length > 0) { %>
-                    <% users.forEach(user => { %>
+                <% if (mang && mang.length > 0) { %>
+                    <% mang.forEach(user => { %>
                         <tr>
                             <td>
                                 <% if (user.avatar) { %>
@@ -42,7 +42,7 @@
                                     <span class="no-data">Không có ảnh</span>
                                 <% } %>
                             </td>
-                            <td><%= user.hoten || "Không xác định" %></td>
+                            <td><%= user.hoten || "Chưa có tên" %></td>
                             <td><%= user.gioitinh || "Không xác định" %></td>
                             <td><%= user.ngaysinh || "Không xác định" %></td>
                             <td><%= user.sdt || "Không xác định" %></td>
