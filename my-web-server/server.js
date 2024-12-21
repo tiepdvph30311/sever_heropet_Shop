@@ -125,7 +125,9 @@ app.use('/notifications', notificationsRouter);
 
 const nguoidung = require('./routes/nguoidungRouter');
 app.use('/nguoidung', nguoidung);
-app.use('/', bookingsRouter);
+
+const revenueRouter = require('./routes/revenueRouter');
+app.use('/revenue', revenueRouter);
 
 // Khởi động server
 

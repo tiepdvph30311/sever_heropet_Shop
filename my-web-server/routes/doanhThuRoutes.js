@@ -68,6 +68,8 @@ const moment = require('moment');
 //   }
 // });
 
+
+
 router.get('/', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
@@ -84,35 +86,18 @@ router.get('/', async (req, res) => {
     }
 
     const revenueSnapshot = await revenueQuery.get();
-    const serviceUsage = {};
-    let totalRevenue = 0;
+    let totalOrders = 0; // Tổng số đơn
+    let totalRevenue = 0; // Tổng doanh thu
 
     revenueSnapshot.forEach(doc => {
       const data = doc.data();
-      const serviceName = data.tenDichVu || 'Dịch vụ không xác định';
       const servicePrice = data.giaDichVu || 0;
 
-      if (serviceUsage[serviceName]) {
-        serviceUsage[serviceName].quantity += 1;
-        serviceUsage[serviceName].totalRevenue += servicePrice;
-      } else {
-        serviceUsage[serviceName] = {
-          quantity: 1,
-          totalRevenue: servicePrice
-        };
-      }
-      totalRevenue += servicePrice;
+      totalOrders += 1; // Đếm số đơn
+      totalRevenue += servicePrice; // Tính tổng doanh thu
     });
 
-    const sortedServiceUsage = Object.keys(serviceUsage)
-      .map(service => ({
-        serviceName: service,
-        quantity: serviceUsage[service].quantity,
-        totalRevenue: serviceUsage[service].totalRevenue
-      }))
-      .sort((a, b) => b.quantity - a.quantity);
-
-    // Query Firestore cho top sản phẩm
+    // Phần xử lý "Top Sản Phẩm"
     const topServicesSnapshot = await db.collection('CTHDBooking').where('trangThai', '==', 'Hoàn thành').get();
     const topServiceUsage = {};
 
@@ -145,13 +130,13 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // Truyền cả hai dữ liệu vào giao diện
+    // Truyền cả dữ liệu vào giao diện
     res.render('doanhthu', {
       startDate: startDate || '',
       endDate: endDate || '',
-      serviceUsage: sortedServiceUsage,
-      totalRevenue,
-      topServices
+      totalOrders, // Tổng số đơn
+      totalRevenue, // Tổng doanh thu
+      topServices, // Dữ liệu top sản phẩm
     });
 
   } catch (error) {

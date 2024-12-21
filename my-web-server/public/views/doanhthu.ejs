@@ -32,28 +32,20 @@
           </div>
         </form>
 
-        <!-- Bảng hiển thị thống kê doanh thu -->
-        <h3 class="text-center">Thống Kê Doanh Thu</h3>
+        <!-- Bảng hiển thị tổng doanh thu và tổng số đơn -->
+        <h3 class="text-center">Tổng Quan Doanh Thu</h3>
         <table class="table table-bordered table-striped table-hover">
           <thead class="table-dark">
             <tr>
-              <th>Tên Dịch Vụ</th>
-              <th>Số Lượng</th>
+              <th>Tổng Số Đơn</th>
               <th>Tổng Doanh Thu</th>
             </tr>
           </thead>
           <tbody>
-            <% if (serviceUsage && serviceUsage.length > 0) { %>
-              <% serviceUsage.forEach(service => { %>
-                <tr>
-                  <td><%= service.serviceName %></td>
-                  <td><%= service.quantity %></td>
-                  <td><%= service.totalRevenue.toLocaleString('vi-VN') %> VND</td>
-                </tr>
-              <% }) %>
-            <% } else { %>
-              <tr><td colspan="3" class="text-center text-muted">Không có dữ liệu trong khoảng thời gian này.</td></tr>
-            <% } %>
+            <tr>
+              <td><%= totalOrders %></td>
+              <td><%= totalRevenue.toLocaleString('vi-VN') %> VND</td>
+            </tr>
           </tbody>
         </table>
 
@@ -63,7 +55,7 @@
           <thead class="table-dark">
             <tr>
               <th>Tên Dịch Vụ</th>
-              <th>Số Lượng</th>
+              <th>Số Lần Sử Dụng</th>
             </tr>
           </thead>
           <tbody>
