@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Booking Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      margin-top: 20px;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    .btn-back {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center text-primary mb-4">Chi tiết hoá đơn</h1>
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        Thông tin khách hàng
+      </div>
+      <div class="card-body">
+        <table class="table table-borderless">
+          <tbody>
+            <tr>
+              <th scope="row">Tên khách hàng</th>
+              <td><%= booking.tenKhachHang || 'Không xác định' %></td>
+            </tr>
+            <tr>
+              <th scope="row">Số điện thoại liên hệ</th>
+              <td><%= booking.sdtNguoiDung || 'Không xác định' %></td>
+            </tr>
+            <tr>
+              <th scope="row">Loại thú cưng</th>
+              <td><%= booking.loaiThuCung || 'Không xác định' %></td>
+            </tr>
+            <tr>
+              <th scope="row">Tên thú cưng</th>
+              <td><%= booking.tenThuCung || 'Không xác định' %></td>
+            </tr>
+            <tr>
+              <th scope="row">Cân nặng</th>
+              <td><%= booking.canNang %> kg</td>
+            </tr>
+            <tr>
+              <th scope="row">Thời gian đặt lịch</th>
+              <td>
+                <% if (booking.thoiGianDatLich && booking.thoiGianDatLich.toDate) { %>
+                  <%= booking.thoiGianDatLich.toDate().toLocaleString() %>
+                <% } else { %>
+                  Không xác định
+                <% } %>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Trạng thái đơn</th>
+              <td><%= booking.trangThai || 'Không xác định' %></td>
+            </tr>
+            <% if (additionalFee > 0) { %>
+            <tr>
+              <th scope="row">Phí phát sinh (cân nặng thú cưng > 15 kg)</th>
+              <td><%= additionalFee.toLocaleString() %> VND</td>
+            </tr>
+            <% } %>
+            <tr>
+              <th scope="row">Tổng tiền</th>
+              <td><%= booking.giaDichVu.toLocaleString() %> VND</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        Danh sách dịch vụ
+      </div>
+      <div class="card-body">
+        <% if (serviceDetails.length > 0) { %>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên dịch vụ</th>
+                <th scope="col">Giá (VND)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% serviceDetails.forEach((service, index) => { %>
+                <tr>
+                  <th scope="row"><%= index + 1 %></th>
+                  <td><%= service.tenDichVu %></td>
+                  <td><%= service.gia.toLocaleString() %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p class="text-muted">Không có dịch vụ nào.</p>
+        <% } %>
+      </div>
+    </div>
+
+    <a href="/bookings" class="btn btn-secondary btn-back">Quay Lại</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
