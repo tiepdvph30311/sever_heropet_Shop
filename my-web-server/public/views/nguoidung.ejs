@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,52 +13,75 @@
             height: 80px;
             object-fit: cover;
         }
+
         .no-data {
             color: gray;
         }
+
+        .main-content{
+      margin-left: 210px;
+    }
+ 
     </style>
 </head>
+
 <body>
-    <div class="container my-5">
-        <h1 class="text-center mb-4">Danh Sách Người Dùng</h1>
-        <table class="table table-striped table-hover table-bordered text-center align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Avatar</th>
-                    <th>Họ Tên</th>
-                    <th>Giới Tính</th>
-                    <th>Ngày Sinh</th>
-                    <th>Số Điện Thoại</th>
-                    <th>Địa Chỉ</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (mang && mang.length > 0) { %>
-                    <% mang.forEach(user => { %>
-                        <tr>
-                            <td>
-                                <% if (user.avatar) { %>
-                                    <img src="<%= user.avatar %>" alt="Avatar" class="img-thumbnail">
-                                <% } else { %>
-                                    <span class="no-data">Không có ảnh</span>
-                                <% } %>
-                            </td>
-                            <td><%= user.hoten || "Chưa có tên" %></td>
-                            <td><%= user.gioitinh || "Không xác định" %></td>
-                            <td><%= user.ngaysinh || "Không xác định" %></td>
-                            <td><%= user.sdt || "Không xác định" %></td>
-                            <td><%= user.diachi || "Không xác định" %></td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="6" class="text-center">Không có dữ liệu người dùng</td>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
-    </div>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="d-flex position-relative">
+
+        <%- include('../views/hader.ejs') %>
+            <div class="main-content">
+                <div class="container my-5">
+                    <h1 class="text-center mb-4">Danh Sách Người Dùng</h1>
+                    <table class="table table-striped table-hover table-bordered text-center align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Avatar</th>
+                                <th>Họ Tên</th>
+                                <th>Giới Tính</th>
+                                <th>Ngày Sinh</th>
+                                <th>Số Điện Thoại</th>
+                                <th>Địa Chỉ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (mang && mang.length> 0) { %>
+                                <% mang.forEach(user=> { %>
+                                    <tr>
+                                        <td>
+                                            <% if (user.avatar) { %>
+                                                <img src="<%= user.avatar %>" alt="Avatar" class="img-thumbnail">
+                                                <% } else { %>
+                                                    <img src="../images/bg2.png" alt="Avatar" class="img-thumbnail">
+                                                    <% } %>
+                                        </td>
+                                        <td>
+                                            <%= user.hoten || "Chưa có tên" %>
+                                        </td>
+                                        <td>
+                                            <%= user.gioitinh || "Không xác định" %>
+                                        </td>
+                                        <td>
+                                            <%= user.ngaysinh || "Không xác định" %>
+                                        </td>
+                                        <td>
+                                            <%= user.sdt || "Không xác định" %>
+                                        </td>
+                                        <td>
+                                            <%= user.diachi || "Không xác định" %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="6" class="text-center">Không có dữ liệu người dùng</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Bootstrap JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

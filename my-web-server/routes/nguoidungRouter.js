@@ -64,13 +64,9 @@ router.get('/', async (req, res) => {
                 }
               });
           }))
-          .then(() => {
-            console.log('All user profiles have been fetched.');
-          })
           .catch(err => {
             console.error('Error fetching user profiles:', err);
           });
-console.log(mang);
 
         // Render view and pass user data
         res.render('nguoidung', { mang });
