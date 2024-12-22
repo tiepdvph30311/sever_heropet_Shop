@@ -121,24 +121,6 @@ router.get('/chitietdoanhthu/:id', async (req, res) => {
     }
     const HoaDon = snapshot.docs[0].data();
 
-
-    // const ngaydathoad = HoaDon.ngaydat
-    // function timestampToFormattedDate(ngaydathoad) {
-    //   const date = new Date(ngaydathoad._seconds * 1000); // Chuyển đổi giây thành mili giây
-    //   const year = date.getFullYear().toString().slice(-2); // Lấy 2 chữ số cuối của năm
-    //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0, nên cộng 1 và thêm số 0 nếu cần
-    //   const day = date.getDate().toString().padStart(2, '0');
-    //   return `${month}/${day}/${year}`;
-    // }
-    
-    // Ví dụ:
-    // const formattedDate = timestampToFormattedDate(ngaydathoad);
-    // console.log(formattedDate); 
-    // console.log(HoaDon.ngaydat);
-    
-
-
-
     const doccthd = await db.collection('ChitietHoaDon')
       .doc(HoaDon.UID)  // Document chứa subcollection ALL
       .collection('ALL')  // Truy vấn vào subcollection ALL

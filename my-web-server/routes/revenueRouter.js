@@ -5,11 +5,6 @@ const router = express.Router();
 const db = admin.firestore(); 
 
 
-// Đảm bảo Firestore đã được cấu hình
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: "https://<your-database-name>.firebaseio.com"
-// });
 
 // Endpoint để thống kê theo tháng
 router.get('/monthly', async (req, res) => {

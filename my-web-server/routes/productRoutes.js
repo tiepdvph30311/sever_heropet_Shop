@@ -44,19 +44,6 @@ router.post('/add', async (req, res) => {
       type: parseInt(type),
     };
       
-    // const docRef = await db.collection('SanPham').add(newProduct);
-
-
-    
-
-    // const sanPhamId = docRef.id;
-
-    // await docRef.update({
-    //   idsp: sanPhamId, 
-    // });
-
-
-
 
      const docRef = await db.collection('SanPham').add(newProduct);
       
