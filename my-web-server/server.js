@@ -106,6 +106,7 @@ app.use('/services', servicesRoutes);
 
 const bookingsRouter = require('./routes/bookingsRouter');
 app.use('/bookings', bookingsRouter);
+app.use('/', bookingsRouter);
 
 const doanhthusRouter = require('./routes/doanhThuRoutes');
 app.use('/doanhthu', doanhthusRouter);
@@ -129,6 +130,8 @@ app.use('/nguoidung', nguoidung);
 const revenueRouter = require('./routes/revenueRouter');
 app.use('/revenue', revenueRouter);
 
+const orders = require('./routes/ordersRouter');
+app.use('/orders', orders);
 // Khởi động server
 
 const port = 3000;

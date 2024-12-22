@@ -103,13 +103,13 @@ router.get('/', async (req, res) => {
 
     topServicesSnapshot.forEach(doc => {
       const data = doc.data();
-      const serviceIds = data.serviceId || []; // Mảng chứa ID dịch vụ
+      const serviceIds = data.serviceIds || []; // Mảng chứa ID dịch vụ
 
-      serviceIds.forEach(serviceId => {
-        if (!topServiceUsage[serviceId]) {
-          topServiceUsage[serviceId] = 0;
+      serviceIds.forEach(serviceIds => {
+        if (!topServiceUsage[serviceIds]) {
+          topServiceUsage[serviceIds] = 0;
         }
-        topServiceUsage[serviceId]++;
+        topServiceUsage[serviceIds]++;
       });
     });
 
@@ -118,12 +118,12 @@ router.get('/', async (req, res) => {
       .slice(0, 10);
 
     const topServices = [];
-    for (const [serviceId, quantity] of sortedTopServices) {
-      const serviceDoc = await db.collection('services').doc(serviceId).get();
+    for (const [serviceIds, quantity] of sortedTopServices) {
+      const serviceDoc = await db.collection('services').doc(serviceIds).get();
       if (serviceDoc.exists) {
         const serviceData = serviceDoc.data();
         topServices.push({
-          serviceId,
+          serviceIds,
           serviceName: serviceData.tenDichVu || 'Không xác định',
           quantity,
         });
@@ -144,5 +144,6 @@ router.get('/', async (req, res) => {
     res.status(500).send('Lỗi khi lấy thống kê');
   }
 });
+
 
 module.exports = router;
