@@ -2,6 +2,16 @@ const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const db = admin.firestore();
+const nodemailer = require('nodemailer');
+
+// Cấu hình SMTP
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: 'tiepdv220601@gmail.com', // Email của bạn
+        pass: 'mgtm mrkf jpyf hepu'  // Mật khẩu ứng dụng
+    }
+});
 
 // Đường dẫn đến danh sách bookings
 // router.get('/', async (req, res) => {
@@ -335,37 +345,122 @@ router.get('/editBooking/:idcthdbooking', async (req, res) => {
     }
 });
 
+// router.post('/editBooking/:idcthdbooking', async (req, res) => {
+//     const { idcthdbooking } = req.params;
+//     const { trangThai } = req.body; // Chỉ cho phép sửa trường trạng thái
+//     try {
+//         const snapshot = await db.collection('CTHDBooking').where('idcthdbooking', '==', idcthdbooking).get();
+//         if (snapshot.empty) {
+//             return res.status(404).send('Booking không tìm thấy');
+//         }
+//         const docId = snapshot.docs[0].id;
+
+
+//         // Cập nhật trạng thái
+//         await db.collection('CTHDBooking').doc(docId).update({
+//             trangThai // Chỉ cập nhật trường trạng thái
+//         });
+
+//         // Nếu trạng thái mới là "Hoàn thành", thêm thông báo cho admin
+//         if (trangThai === 'Hoàn thành') {
+//             const notification = {
+//                 message: `Booking ${idcthdbooking} Đã hoàn thành .`,
+//                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
+//             };
+//             await db.collection('Notifications').add(notification);  // Lưu thông báo vào Firestore
+//         }
+
+//         res.redirect('/bookings'); // Quay lại danh sách booking sau khi sửa
+//     } catch (error) {
+//         console.error("Lỗi khi cập nhật booking:", error);
+//         res.status(500).send('Lỗi khi cập nhật booking');
+//     }
+// });
+
+
 router.post('/editBooking/:idcthdbooking', async (req, res) => {
-    const { idcthdbooking } = req.params;
-    const { trangThai } = req.body; // Chỉ cho phép sửa trường trạng thái
-    try {
-        const snapshot = await db.collection('CTHDBooking').where('idcthdbooking', '==', idcthdbooking).get();
-        if (snapshot.empty) {
-            return res.status(404).send('Booking không tìm thấy');
-        }
-        const docId = snapshot.docs[0].id;
+  const { idcthdbooking } = req.params;
+  const { trangThai } = req.body;
+
+  try {
+      // Tìm booking trong bảng `CTHDBooking`
+      const snapshot = await db.collection('CTHDBooking').where('idcthdbooking', '==', idcthdbooking).get();
+      if (snapshot.empty) {
+          return res.status(404).send('Booking không tìm thấy');
+      }
+
+      const docId = snapshot.docs[0].id;
+      const booking = snapshot.docs[0].data();
+
+      // Cập nhật trạng thái đơn hàng
+      await db.collection('CTHDBooking').doc(docId).update({ trangThai });
+
+      // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking
+     // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking
+if (booking.iduser) {
+  console.log(`Đang tìm email cho iduser: ${booking.iduser}`);
+  const userSnapshot = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
+  if (userSnapshot.empty) {
+      console.error(`Không tìm thấy user với iduser: ${booking.iduser}`);
+  } else {
+      const userData = userSnapshot.docs[0].data();
+      console.log('Thông tin user tìm thấy:', userData);
+
+      if (userData['email']) {
+
+        const emailContent = `
+                      <h2>Thông tin đặt lịch của bạn</h2>
+                      <p><b>Tên khách hàng:</b> ${booking.tenKhachHang}</p>
+                      <p><b>Số điện thoại:</b> ${booking.sdtNguoiDung}</p>
+                      <p><b>Loại thú cưng:</b> ${booking.loaiThuCung}</p>
+                      <p><b>Tên thú cưng:</b> ${booking.tenThuCung}</p>
+                      <p><b>Dịch vụ:</b> ${booking.tenDichVu}</p>
+                      <p><b>Giá dịch vụ:</b> ${booking.giaDichVu.toLocaleString()} VND</p>
+                      <p><b>Trọng lượng thú cưng:</b> ${booking.canNang} kg</p>
+                      <p><b>Thời gian đặt lịch:</b> ${new Date(booking.thoiGianDatLich.toDate()).toLocaleString()}</p>
+                      <p><b>Trạng thái hiện tại:</b> ${trangThai}</p>
+                      <br>
+                      <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+                  `;
+
+          const mailOptions = {
+              from: 'tiepdv220601@gmail.com',
+              to: userData['email'],
+              subject: 'Cập nhật trạng thái đơn hàng',
+              text: `Trạng thái đơn hàng ${idcthdbooking} của bạn đã được cập nhật thành: ${trangThai}.`,
+              html: emailContent
+          };
+
+          console.log('MailOptions trước khi gửi:', mailOptions);
+
+          // Gửi email
+          await transporter.sendMail(mailOptions);
+          console.log(`Email đã được gửi đến: ${userData['email']}`);
+      } else {
+          console.error(`Không tìm thấy trường 'e-mail' cho iduser: ${booking.iduser}`);
+      }
+  }
+} else {
+  console.error('Booking không có iduser.');
+}
 
 
-        // Cập nhật trạng thái
-        await db.collection('CTHDBooking').doc(docId).update({
-            trangThai // Chỉ cập nhật trường trạng thái
-        });
+      // Thêm thông báo vào bảng `Notifications` nếu trạng thái là "Hoàn thành"
+      if (trangThai === 'Hoàn thành') {
+          const notification = {
+              message: `Booking ${idcthdbooking} đã hoàn thành.`,
+              createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          };
+          await db.collection('Notifications').add(notification);
+      }
 
-        // Nếu trạng thái mới là "Hoàn thành", thêm thông báo cho admin
-        if (trangThai === 'Hoàn thành') {
-            const notification = {
-                message: `Booking ${idcthdbooking} Đã hoàn thành .`,
-                createdAt: admin.firestore.FieldValue.serverTimestamp(),
-            };
-            await db.collection('Notifications').add(notification);  // Lưu thông báo vào Firestore
-        }
-
-        res.redirect('/bookings'); // Quay lại danh sách booking sau khi sửa
-    } catch (error) {
-        console.error("Lỗi khi cập nhật booking:", error);
-        res.status(500).send('Lỗi khi cập nhật booking');
-    }
+      res.redirect('/bookings');
+  } catch (error) {
+      console.error("Lỗi khi cập nhật booking:", error);
+      res.status(500).send('Lỗi khi cập nhật booking');
+  }
 });
+
 
 // Xóa booking
 router.get('/deleteBooking/:idcthdbooking', async (req, res) => {
