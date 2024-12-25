@@ -99,43 +99,6 @@ router.get('/editHoaDon/:id', async (req, res) => {
     const ngaydathd = `${HoaDon.ngaydat}`
 
 
-
-    // const product = await db.collection('SanPham').get();
-    // const products = product.docs.map(doc => doc.data());
-
-
-
-
-    // function updateSoluong(products, ChiTHd) {
-    //   // Tạo một Map để lưu trữ số lượng cần trừ đi cho từng id trong listds
-    //   const soluongMap = new Map();
-    //   ChiTHd.forEach(item => {
-    //     soluongMap.set(item.id_product, item.soluong);
-    //   });
-
-    //   // Duyệt qua mảng sanpham và cập nhật số lượng
-    //   products.forEach(async item => {
-    //     const soluongTru = soluongMap.get(item.id);
-    //     if (soluongTru) {
-    //       // Kiểm tra xem số lượng còn lại có âm không
-    //       await db.collection('SanPham').doc(item.id).update({
-
-    //         soluong: item.soluong = Math.max(item.soluong - soluongTru, 0)
-    //       });
-
-
-
-    //     }
-    //   });
-
-    //   return products;
-    // }
-
-    // const updatedSanPham = updateSoluong(products, ChiTHd);
-
-
-
-
     res.render('editHoaDon', { HoaDon, listCTHDSP, ChiTHd, tong });
 
   } catch (error) {

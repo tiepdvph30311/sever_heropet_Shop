@@ -107,7 +107,6 @@ app.use('/services', servicesRoutes);
 const bookingsRouter = require('./routes/bookingsRouter');
 app.use('/bookings', bookingsRouter);
 
-
 const doanhthusRouter = require('./routes/doanhThuRoutes');
 app.use('/doanhthu', doanhthusRouter);
 
@@ -126,6 +125,7 @@ app.use('/notifications', notificationsRouter);
 
 const nguoidung = require('./routes/nguoidungRouter');
 app.use('/nguoidung', nguoidung);
+
 
 const revenueRouter = require('./routes/revenueRouter');
 app.use('/revenue', revenueRouter);
