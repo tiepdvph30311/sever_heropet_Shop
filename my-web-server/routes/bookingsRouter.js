@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 router.get('/', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1; // Trang hiện tại
-        const pageSize = 5; // Số lượng phần tử trên mỗi trang
+        const pageSize = 10; // Số lượng phần tử trên mỗi trang
         const startAt = (page - 1) * pageSize;
 
         // Lấy danh sách bookings có phân trang
@@ -208,7 +208,7 @@ router.get('/details/:idcthdbooking', async (req, res) => {
     }
   });
   
-router.get('/search', async (req, res) => {
+router.get('/searchbooking', async (req, res) => {
     const { tenKhachHang } = req.query;
     try {
         // Lấy tất cả dữ liệu nếu không có tham số tìm kiếm
@@ -272,7 +272,7 @@ router.get('/editBooking/:idcthdbooking', async (req, res) => {
         
         console.log(bookinguid);
 
-        res.render('editBooking', { booking }); // Gửi thông tin booking để hiển thị lên form sửa
+        res.render('editBooking', { booking, errorMessage: null }); // Gửi thông tin booking để hiển thị lên form sửa
     } catch (error) {
         console.error("Lỗi khi sửa booking:", error);
         res.status(500).send('Lỗi khi sửa booking');
@@ -314,7 +314,7 @@ router.get('/editBooking/:idcthdbooking', async (req, res) => {
 
 router.post('/editBooking/:idcthdbooking', async (req, res) => {
   const { idcthdbooking } = req.params;
-  const { trangThai } = req.body;
+  const { trangThai, lyDoHuy } = req.body;
 
   try {
       // Tìm booking trong bảng `CTHDBooking`
@@ -323,11 +323,46 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
           return res.status(404).send('Booking không tìm thấy');
       }
 
+      
       const docId = snapshot.docs[0].id;
       const booking = snapshot.docs[0].data();
 
+      const currentTime = new Date(); // Thời gian hiện tại
+      const bookingTime = booking.thoiGianDatLich.toDate();
+
+      if (
+        booking.trangThai === 'Đã xác nhận' && 
+        (trangThai === 'Đã huỷ' || trangThai === 'Chưa xác nhận')
+    ) {
+        return res.status(400).render('editBooking', { 
+            booking, 
+            errorMessage: 'Không thể chuyển trạng thái từ "Đã xác nhận" sang "Chưa xác nhận".' 
+        });
+    }
+  //   if (booking.trangThai === 'Đã xác nhận' && trangThai === 'Đã huỷ') {
+  //     return res.status(400).render('editBooking', { 
+  //         booking, 
+  //         errorMessage: 'Không thể hủy đơn đã được xác nhận!', 
+  //         allowCancel: false // Không cho phép hiển thị ô nhập lý do
+  //     });
+  // }
+
+
+      // Kiểm tra nếu trạng thái là "Hoàn thành" mà thời gian hiện tại chưa đến thời gian đặt lịch
+      if (trangThai === 'Hoàn thành' && currentTime < bookingTime) {
+          return res.status(400).render('editBooking', { 
+              booking, 
+              errorMessage: 'Không thể hoàn thành đơn trước thời gian đặt lịch.' 
+          });
+      }
+
       // Cập nhật trạng thái đơn hàng
-      await db.collection('CTHDBooking').doc(docId).update({ trangThai });
+      const updateData = { trangThai };
+      if (trangThai === 'Đã huỷ' && lyDoHuy) {
+          updateData.lyDoHuy = lyDoHuy; // Lưu lý do huỷ nếu trạng thái là huỷ
+      }
+
+      await db.collection('CTHDBooking').doc(docId).update(updateData);
 
       // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking
      // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking

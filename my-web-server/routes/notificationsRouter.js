@@ -6,7 +6,10 @@ const db = admin.firestore();
 // Route hiển thị danh sách thông báo
 router.get('/', async (req, res) => {
     try {
-        const snapshot = await db.collection('Notifications').get();
+        // Truy vấn danh sách thông báo và sắp xếp theo thời gian giảm dần
+        const snapshot = await db.collection('Notifications')
+            .orderBy('createdAt', 'desc') // Sắp xếp theo `createdAt` giảm dần
+            .get();
 
         // Xử lý dữ liệu và định dạng thời gian từ Timestamp
         const notifications = snapshot.docs.map(doc => {

@@ -63,6 +63,12 @@
               <th scope="row">Trạng thái đơn</th>
               <td><%= booking.trangThai || 'Không xác định' %></td>
             </tr>
+            <% if (booking.trangThai === 'Đã huỷ') { %>
+            <tr>
+              <th scope="row">Lý do hủy</th>
+              <td><%= booking.lyDoHuy || 'Không có lý do' %></td>
+            </tr>
+            <% } %>
             <% if (additionalFee > 0) { %>
             <tr>
               <th scope="row">Phí phát sinh (cân nặng thú cưng > 15 kg)</th>
