@@ -3,6 +3,7 @@ const router = express.Router();
 const admin = require('firebase-admin');
 const db = admin.firestore();
 const nodemailer = require('nodemailer');
+const messaging = admin.messaging();
 
 // Cấu hình SMTP
 const transporter = nodemailer.createTransport({
@@ -270,7 +271,7 @@ router.get('/editBooking/:idcthdbooking', async (req, res) => {
             
         const bookinguid = doccthd.docs[0].data();
         
-        console.log(bookinguid);
+        // console.log(bookinguid);
 
         res.render('editBooking', { booking, errorMessage: null }); // Gửi thông tin booking để hiển thị lên form sửa
     } catch (error) {
@@ -364,16 +365,42 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
 
       await db.collection('CTHDBooking').doc(docId).update(updateData);
 
+
+//=========================================================
+
+    const snapshotuser = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
+    const usertoken = snapshotuser.docs[0].data();
+    // console.log(usertoken.iduser);
+
+    
+    const message = {
+      notification: {
+        title: `${booking.tenKhachHang} ơi!`,
+        body: `Lịch đặt của bạn đã đổi trạng thái: ${trangThai}`
+      },
+      token: usertoken.user_token // Token của thiết bị nhận thông báo
+    };
+
+    messaging.send(message)
+      .then((response) => {
+        // console.log('Successfully sent message:', response);
+      })
+      .catch((error) => {
+        console.log('Error sending message:', error);
+      });
+    //==========================================
+
+
       // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking
      // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking
 if (booking.iduser) {
-  console.log(`Đang tìm email cho iduser: ${booking.iduser}`);
+  // console.log(`Đang tìm email cho iduser: ${booking.iduser}`);
   const userSnapshot = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
   if (userSnapshot.empty) {
       console.error(`Không tìm thấy user với iduser: ${booking.iduser}`);
   } else {
       const userData = userSnapshot.docs[0].data();
-      console.log('Thông tin user tìm thấy:', userData);
+      // console.log('Thông tin user tìm thấy:', userData);
 
       if (userData['email']) {
 
@@ -400,11 +427,11 @@ if (booking.iduser) {
               html: emailContent
           };
 
-          console.log('MailOptions trước khi gửi:', mailOptions);
+          // console.log('MailOptions trước khi gửi:', mailOptions);
 
           // Gửi email
           await transporter.sendMail(mailOptions);
-          console.log(`Email đã được gửi đến: ${userData['email']}`);
+          // console.log(`Email đã được gửi đến: ${userData['email']}`);
       } else {
           console.error(`Không tìm thấy trường 'e-mail' cho iduser: ${booking.iduser}`);
       }
