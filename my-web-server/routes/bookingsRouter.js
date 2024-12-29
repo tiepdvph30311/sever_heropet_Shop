@@ -381,6 +381,7 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
       token: usertoken.user_token // Token của thiết bị nhận thông báo
     };
 
+
     messaging.send(message)
       .then((response) => {
         // console.log('Successfully sent message:', response);
