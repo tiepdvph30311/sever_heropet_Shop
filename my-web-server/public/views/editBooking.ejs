@@ -1,52 +1,138 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sửa Booking</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
     <div class="container mt-5">
-        <h1 class="text-center mb-5">Cập nhật Trạng Thái Booking</h1>
-        
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                Sửa Trạng Thái của Booking: <%= booking.idcthdbooking %>
-            </div>
-            <div class="card-body">
-                <% if (errorMessage) { %>
-                    <div class="alert alert-danger"><%= errorMessage %></div>
-                <% } %>
-                <form action="/bookings/editBooking/<%= booking.idcthdbooking %>" method="POST">
-                    <div class="mb-3">
-                        <label class="form-label">Trạng Thái</label>
-                        <div class="d-flex gap-2">
-                            <button type="submit" name="trangThai" value="Đã xác nhận" class="btn btn-primary">Đã xác nhận</button>
-                            <button type="submit" name="trangThai" value="Chưa xác nhận" class="btn btn-warning">Chưa xác nhận</button>
-                            <button type="button" id="btn-huy" class="btn btn-danger">Hủy</button>
-                            <button type="submit" name="trangThai" value="Hoàn thành" class="btn btn-success">Hoàn thành</button>
-                        </div>
-                    </div>
-            
-                    <!-- Input nhập lý do hủy -->
-                    <div id="reason-container" class="mt-3" style="display: none;">
-                        <label for="lyDoHuy" class="form-label">Lý Do Hủy</label>
-                        <input type="text" id="lyDoHuy" name="lyDoHuy" class="form-control" placeholder="Nhập lý do hủy">
-            
-                        <!-- Nút xác nhận hủy -->
-                        <button type="submit" name="trangThai" value="Đã huỷ" class="btn btn-danger mt-3">Xác nhận Hủy</button>
-                    </div>
-                </form>
-            </div>
-            
+      <h1 class="text-center mb-5">Cập nhật Trạng Thái Booking</h1>
+
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          Sửa Trạng Thái của Booking: <%= booking.idcthdbooking %>
         </div>
+        <div class="card-body">
+          <% if (errorMessage) { %>
+          <div class="alert alert-danger"><%= errorMessage %></div>
+          <% } %>
+          <form
+            action="/bookings/editBooking/<%= booking.idcthdbooking %>"
+            method="POST"
+          >
+            <div class="mb-3">
+              <label class="form-label">Trạng Thái</label>
+              <div class="d-flex gap-2">
+                <button
+                  type="submit"
+                  name="trangThai"
+                  value="Đã xác nhận"
+                  class="btn btn-primary"
+                >
+                  Đã xác nhận
+                </button>
+                <button
+                  type="submit"
+                  name="trangThai"
+                  value="Chưa xác nhận"
+                  class="btn btn-warning"
+                >
+                  Chưa xác nhận
+                </button>
+                <button type="button" id="btn-huy" class="btn btn-danger">
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  name="trangThai"
+                  value="Đang xử lý"
+                  class="btn btn-success"
+                >
+                  Đang xử lý
+                </button>
+                <button
+                  type="submit"
+                  name="trangThai"
+                  value="Hoàn thành"
+                  class="btn btn-success"
+                >
+                  Hoàn thành
+                </button>
+              </div>
+            </div>
+
+            <!-- Input nhập lý do hủy -->
+            <div id="reason-container" class="mt-3" style="display: none">
+              <label for="lyDoHuy" class="form-label">Lý Do Hủy</label>
+              <input
+                type="text"
+                id="lyDoHuy"
+                name="lyDoHuy"
+                class="form-control"
+                placeholder="Nhập lý do hủy"
+              />
+
+              <!-- Nút xác nhận hủy -->
+              <button
+                type="submit"
+                name="trangThai"
+                value="Đã huỷ"
+                class="btn btn-danger mt-3"
+              >
+                Xác nhận Hủy
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <script>
-        document.getElementById('btn-huy').addEventListener('click', () => {
-            document.getElementById('reason-container').style.display = 'block';
+        document.getElementById("btn-huy").addEventListener("click", () => {
+          document.getElementById("reason-container").style.display = "block";
         });
-    </script>
-</body>
+      
+        const currentStatus = "<%= booking.trangThai %>"; // Trạng thái của booking hiện tại (ví dụ: Đang xử lý)
+      
+        // Kiểm tra trạng thái hiện tại của booking
+        if (currentStatus === "Chưa xác nhận") {
+          // Nếu trạng thái là "Chưa xác nhận", chỉ hiển thị nút chuyển sang "Đã xác nhận" hoặc "Hủy"
+          const buttons = document.querySelectorAll('button[name="trangThai"]');
+          buttons.forEach((button) => {
+            if (button.value !== "Đã xác nhận" && button.value !== "Đã huỷ") {
+              button.disabled = true; // Vô hiệu hóa các nút không phải "Đã xác nhận" hoặc "Hủy"
+            }
+          });
+        } else if (currentStatus === "Đã xác nhận") {
+          // Nếu trạng thái là "Đã xác nhận", chỉ hiển thị nút chuyển sang "Đang xử lý" hoặc "Hủy"
+          const buttons = document.querySelectorAll('button[name="trangThai"]');
+          buttons.forEach((button) => {
+            if (button.value !== "Đang xử lý" && button.value !== "Đã huỷ") {
+              button.disabled = true; // Vô hiệu hóa các nút không phải "Đang xử lý" hoặc "Hủy"
+            }
+          });
+        } else if (currentStatus === "Đang xử lý") {
+          // Nếu trạng thái là "Đang xử lý", chỉ hiển thị nút chuyển sang "Hoàn thành" hoặc "Hủy"
+          const buttons = document.querySelectorAll('button[name="trangThai"]');
+          buttons.forEach((button) => {
+            if (button.value !== "Hoàn thành" && button.value !== "Đã huỷ") {
+              button.disabled = true; // Vô hiệu hóa các nút không phải "Hoàn thành" hoặc "Hủy"
+            }
+          });
+      
+          // Ẩn nút "Hủy" khi trạng thái là "Đang xử lý"
+          document.getElementById("btn-huy").style.display = "inline-block";
+        } else {
+          // Nếu trạng thái là khác "Đang xử lý", nút "Hủy" sẽ hiển thị trở lại
+          document.getElementById("btn-huy").style.display = "inline-block";
+        }
+      </script>
+      
+      
+  </body>
 </html>

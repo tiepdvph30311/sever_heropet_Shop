@@ -15,61 +15,126 @@ const transporter = nodemailer.createTransport({
 });
 
 
-router.get('/', async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1; // Trang hiện tại
-        const pageSize = 10; // Số lượng phần tử trên mỗi trang
-        const startAt = (page - 1) * pageSize;
+// router.get('/', async (req, res) => {
+//     try {
+//         const page = parseInt(req.query.page) || 1; // Trang hiện tại
+//         const pageSize = 10; // Số lượng phần tử trên mỗi trang
+//         const startAt = (page - 1) * pageSize;
 
-        // Lấy danh sách bookings có phân trang
-        const snapshot = await db.collection('CTHDBooking')
-            .orderBy('thoiGianDatLich', 'desc') // Sắp xếp giảm dần
-            .offset(startAt)
-            .limit(pageSize)
-            .get();
+//         // Lấy danh sách bookings có phân trang
+//         const snapshot = await db.collection('CTHDBooking')
+//             .orderBy('thoiGianDatLich', 'desc') // Sắp xếp giảm dần
+//             .offset(startAt)
+//             .limit(pageSize)
+//             .get();
 
-        const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+//         const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // Lấy thông tin Profile từ User → Profile cho mỗi booking
-        for (let booking of bookings) {
-            if (booking.iduser) {
-                const profilesSnapshot = await db.collection('User')
-                    .doc(booking.iduser)
-                    .collection('Profile')
-                    .get();
+//         // Lấy thông tin Profile từ User → Profile cho mỗi booking
+//         for (let booking of bookings) {
+//             if (booking.iduser) {
+//                 const profilesSnapshot = await db.collection('User')
+//                     .doc(booking.iduser)
+//                     .collection('Profile')
+//                     .get();
 
-                if (!profilesSnapshot.empty) {
-                    const profileData = profilesSnapshot.docs[0].data();
-                    booking.hoten = profileData.hoten || 'Không xác định';
-                    booking.sdt = profileData.sdt || 'Không xác định';
-                } else {
-                    booking.hoten = 'Không xác định';
-                    booking.sdt = 'Không xác định';
-                }
-            } else {
-                booking.hoten = 'Không xác định';
-                booking.sdt = 'Không xác định';
-            }
-        }
+//                 if (!profilesSnapshot.empty) {
+//                     const profileData = profilesSnapshot.docs[0].data();
+//                     booking.hoten = profileData.hoten || 'Không xác định';
+//                     booking.sdt = profileData.sdt || 'Không xác định';
+//                 } else {
+//                     booking.hoten = 'Không xác định';
+//                     booking.sdt = 'Không xác định';
+//                 }
+//             } else {
+//                 booking.hoten = 'Không xác định';
+//                 booking.sdt = 'Không xác định';
+//             }
+//         }
 
-        // Tổng số lượng bản ghi
-        const totalSnapshot = await db.collection('CTHDBooking').get();
-        const totalRecords = totalSnapshot.size;
-        const totalPages = Math.ceil(totalRecords / pageSize);
+//         // Tổng số lượng bản ghi
+//         const totalSnapshot = await db.collection('CTHDBooking').get();
+//         const totalRecords = totalSnapshot.size;
+//         const totalPages = Math.ceil(totalRecords / pageSize);
 
-        res.render('bookings', {
-            bookings,
-            currentPage: page,
-            totalPages: totalPages,
-            hoten: '' // Giá trị mặc định của hoten
-        });
-    } catch (error) {
-        console.error('Lỗi khi tải danh sách bookings:', error);
-        res.status(500).send('Lỗi khi tải danh sách bookings');
-    }
-});
+//         res.render('bookings', {
+//             bookings,
+//             currentPage: page,
+//             totalPages: totalPages,
+//             hoten: '' // Giá trị mặc định của hoten
+//         });
+//     } catch (error) {
+//         console.error('Lỗi khi tải danh sách bookings:', error);
+//         res.status(500).send('Lỗi khi tải danh sách bookings');
+//     }
+// });
 
 // chi tiết đơn hàng
+
+router.get('/', async (req, res) => {
+  try {
+      const { fromDate, toDate,phoneNumber } = req.query; // Get the date range from the query parameters
+      const page = parseInt(req.query.page) || 1; // Trang hiện tại
+      const pageSize = 50; // Số lượng phần tử trên mỗi trang
+      const startAt = (page - 1) * pageSize;
+
+      let query = db.collection('CTHDBooking').orderBy('thoiGianDatLich', 'desc'); // Sắp xếp giảm dần
+
+      // Filter by date range if fromDate and toDate are provided
+      if (fromDate && toDate) {
+          query = query.where('thoiGianDatLich', '>=', new Date(fromDate))
+                       .where('thoiGianDatLich', '<=', new Date(toDate));
+      }
+      if (phoneNumber) {
+        query.sdtNguoiDung = phoneNumber;
+      }
+
+      // Fetch the bookings with pagination
+      const snapshot = await query.offset(startAt).limit(pageSize).get();
+
+      const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      // Fetch profile info for each booking
+      for (let booking of bookings) {
+          if (booking.iduser) {
+              const profilesSnapshot = await db.collection('User')
+                  .doc(booking.iduser)
+                  .collection('Profile')
+                  .get();
+
+              if (!profilesSnapshot.empty) {
+                  const profileData = profilesSnapshot.docs[0].data();
+                  booking.hoten = profileData.hoten || 'Không xác định';
+                  booking.sdt = profileData.sdt || 'Không xác định';
+              } else {
+                  booking.hoten = 'Không xác định';
+                  booking.sdt = 'Không xác định';
+              }
+          } else {
+              booking.hoten = 'Không xác định';
+              booking.sdt = 'Không xác định';
+          }
+      }
+
+      // Get the total count of bookings for pagination
+      const totalSnapshot = await db.collection('CTHDBooking').get();
+      const totalRecords = totalSnapshot.size;
+      const totalPages = Math.ceil(totalRecords / pageSize);
+
+      res.render('bookings', {
+          bookings,
+          currentPage: page,
+          totalPages: totalPages,
+          fromDate: fromDate || '', // Pass the fromDate to the template
+          toDate: toDate || '',     // Pass the toDate to the template
+          phoneNumber
+      });
+  } catch (error) {
+      console.error('Error loading bookings:', error);
+      res.status(500).send('Error loading bookings');
+  }
+});
+
 router.get('/:idcthdbooking', async (req, res) => {
     const { idcthdbooking } = req.params;
     try {
@@ -113,49 +178,7 @@ router.get('/:idcthdbooking', async (req, res) => {
       res.status(500).send('Error fetching booking details');
     }
   });
-//   router.get('/details/:idcthdbooking', async (req, res) => {
-//     const { idcthdbooking } = req.params;
-//     try {
-//       const snapshot = await db.collection('CTHDBooking').where('idcthdbooking', '==', idcthdbooking).get();
-//       if (snapshot.empty) {
-//         return res.status(404).send('Booking not found');
-//       }
-//       const booking = snapshot.docs[0].data();
-  
-//       // Fetch user profile information
-//       let userProfile = {};
-//       if (booking.iduser) {
-//         const profilesSnapshot = await db.collection('User')
-//           .doc(booking.iduser)
-//           .collection('Profile')
-//           .get();
-  
-//         if (!profilesSnapshot.empty) {
-//           userProfile = profilesSnapshot.docs[0].data();
-//         }
-//       }
-  
-//       // Fetch service details using serviceIds
-//       const serviceDetails = [];
-//       if (booking.serviceIds && Array.isArray(booking.serviceIds)) {
-//         for (const serviceId of booking.serviceIds) {
-//           const serviceSnapshot = await db.collection('services').doc(serviceId).get();
-//           if (serviceSnapshot.exists) {
-//             serviceDetails.push(serviceSnapshot.data());
-//           }
-//         }
-//       }
-  
-//       res.render('bookingDetail', {
-//         booking,
-//         userProfile,
-//         serviceDetails
-//       });
-//     } catch (error) {
-//       console.error('Error fetching booking details:', error);
-//       res.status(500).send('Error fetching booking details');
-//     }
-//   });
+
     
 router.get('/details/:idcthdbooking', async (req, res) => {
     const { idcthdbooking } = req.params;
@@ -248,6 +271,45 @@ router.get('/searchbooking', async (req, res) => {
     }
 });
 
+// Tìm kiếm booking theo số điện thoại khách hàng
+router.get('/searchByPhone', async (req, res) => {
+  const { phoneNumber } = req.query;
+  try {
+      let bookingsSnapshot;
+      let isSearch = false;
+
+      // Kiểm tra nếu số điện thoại được cung cấp
+      if (phoneNumber && phoneNumber.trim() !== '') {
+          console.log("Đang tìm kiếm khách hàng với số điện thoại:", phoneNumber.trim());
+          isSearch = true;
+
+          // Lọc theo số điện thoại khách hàng (trường sdtNguoiDung)
+          bookingsSnapshot = await db.collection('CTHDBooking')
+              .where('sdtNguoiDung', '>=', phoneNumber.trim())
+              .where('sdtNguoiDung', '<=', phoneNumber.trim() + '\uf8ff')
+              .get();
+      } else {
+          // Lấy toàn bộ bookings nếu không có tìm kiếm
+          bookingsSnapshot = await db.collection('CTHDBooking').get();
+      }
+
+      const bookings = bookingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      console.log("Danh sách bookings tìm thấy:", bookings);
+
+      // Hiển thị danh sách bookings với điều kiện tìm kiếm hoặc không
+      res.render('bookings', {
+          bookings,
+          currentPage: 1,
+          totalPages: 1,
+          phoneNumber: phoneNumber || '', // Trả lại số điện thoại tìm kiếm (nếu có)
+          isSearch
+      });
+  } catch (error) {
+      console.error('Lỗi khi tìm kiếm bookings theo số điện thoại:', error);
+      res.status(500).send('Lỗi khi tìm kiếm bookings theo số điện thoại.');
+  }
+});
 
 
 
@@ -280,38 +342,6 @@ router.get('/editBooking/:idcthdbooking', async (req, res) => {
     }
 });
 
-// router.post('/editBooking/:idcthdbooking', async (req, res) => {
-//     const { idcthdbooking } = req.params;
-//     const { trangThai } = req.body; // Chỉ cho phép sửa trường trạng thái
-//     try {
-//         const snapshot = await db.collection('CTHDBooking').where('idcthdbooking', '==', idcthdbooking).get();
-//         if (snapshot.empty) {
-//             return res.status(404).send('Booking không tìm thấy');
-//         }
-//         const docId = snapshot.docs[0].id;
-
-
-//         // Cập nhật trạng thái
-//         await db.collection('CTHDBooking').doc(docId).update({
-//             trangThai // Chỉ cập nhật trường trạng thái
-//         });
-
-//         // Nếu trạng thái mới là "Hoàn thành", thêm thông báo cho admin
-//         if (trangThai === 'Hoàn thành') {
-//             const notification = {
-//                 message: `Booking ${idcthdbooking} Đã hoàn thành .`,
-//                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
-//             };
-//             await db.collection('Notifications').add(notification);  // Lưu thông báo vào Firestore
-//         }
-
-//         res.redirect('/bookings'); // Quay lại danh sách booking sau khi sửa
-//     } catch (error) {
-//         console.error("Lỗi khi cập nhật booking:", error);
-//         res.status(500).send('Lỗi khi cập nhật booking');
-//     }
-// });
-
 
 router.post('/editBooking/:idcthdbooking', async (req, res) => {
   const { idcthdbooking } = req.params;
@@ -324,32 +354,42 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
           return res.status(404).send('Booking không tìm thấy');
       }
 
-      
       const docId = snapshot.docs[0].id;
       const booking = snapshot.docs[0].data();
 
       const currentTime = new Date(); // Thời gian hiện tại
-      const bookingTime = booking.thoiGianDatLich.toDate();
+      const bookingTime = booking.thoiGianDatLich.toDate(); // Thời gian đặt lịch của booking
 
-      if (
-        booking.trangThai === 'Đã xác nhận' && 
-        (trangThai === 'Đã huỷ' || trangThai === 'Chưa xác nhận')
-    ) {
-        return res.status(400).render('editBooking', { 
-            booking, 
-            errorMessage: 'Không thể chuyển trạng thái từ "Đã xác nhận" sang "Chưa xác nhận".' 
-        });
-    }
-  //   if (booking.trangThai === 'Đã xác nhận' && trangThai === 'Đã huỷ') {
-  //     return res.status(400).render('editBooking', { 
-  //         booking, 
-  //         errorMessage: 'Không thể hủy đơn đã được xác nhận!', 
-  //         allowCancel: false // Không cho phép hiển thị ô nhập lý do
-  //     });
-  // }
+      // Kiểm tra trạng thái đang là "Đang xử lý" và không chuyển sang bất kỳ trạng thái khác ngoài "Hoàn thành"
+      if (booking.trangThai === 'Đang xử lý' && trangThai !== 'Hoàn thành') {
+          return res.status(400).render('editBooking', { 
+              booking, 
+              errorMessage: 'Chỉ có thể chuyển trạng thái từ "Đang xử lý" sang "Hoàn thành".'
+          });
+      }
 
+      // Kiểm tra trạng thái "Chưa xác nhận" không thể chuyển sang "Đang xử lý"
+      if (booking.trangThai === 'Chưa xác nhận' && trangThai === 'Đang xử lý') {
+          return res.status(400).render('editBooking', { 
+              booking, 
+              errorMessage: 'Chưa xác nhận, bạn phải chuyển sang "Đã xác nhận" trước khi chuyển sang "Đang xử lý".'
+          });
+      }
 
-      // Kiểm tra nếu trạng thái là "Hoàn thành" mà thời gian hiện tại chưa đến thời gian đặt lịch
+      // Kiểm tra thời gian đặt lịch để cho phép chuyển sang trạng thái "Đang xử lý"
+      if (trangThai === 'Đang xử lý') {
+          const timeDifference = currentTime - bookingTime; // Chênh lệch thời gian giữa thời gian hiện tại và giờ đã đặt
+
+          // Kiểm tra nếu thời gian hiện tại ít hơn 30 phút sau thời gian đặt lịch
+          if (timeDifference < 1 * 60 * 1000) { // 1 phút = 30 * 60 * 1000 ms
+              return res.status(400).render('editBooking', { 
+                  booking, 
+                  errorMessage: 'Đơn hàng chưa tới giờ ! Bạn phải đợi ít nhất 1 phút sau giờ đã đặt để chuyển trạng thái sang "Đang xử lý".' 
+              });
+          }
+      }
+
+      // Kiểm tra trạng thái "Hoàn thành" mà thời gian hiện tại chưa đến thời gian đặt lịch
       if (trangThai === 'Hoàn thành' && currentTime < bookingTime) {
           return res.status(400).render('editBooking', { 
               booking, 
@@ -365,47 +405,38 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
 
       await db.collection('CTHDBooking').doc(docId).update(updateData);
 
+      //=========================================================
 
-//=========================================================
+      const snapshotuser = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
+      const usertoken = snapshotuser.docs[0].data();
 
-    const snapshotuser = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
-    const usertoken = snapshotuser.docs[0].data();
-    // console.log(usertoken.iduser);
+      const message = {
+          notification: {
+              title: `${booking.tenKhachHang} ơi!`,
+              body: `Lịch đặt của bạn đã đổi trạng thái: ${trangThai}`
+          },
+          token: usertoken.user_token // Token của thiết bị nhận thông báo
+      };
 
-    
-    const message = {
-      notification: {
-        title: `${booking.tenKhachHang} ơi!`,
-        body: `Lịch đặt của bạn đã đổi trạng thái: ${trangThai}`
-      },
-      token: usertoken.user_token // Token của thiết bị nhận thông báo
-    };
+      messaging.send(message)
+          .then((response) => {
+              // console.log('Successfully sent message:', response);
+          })
+          .catch((error) => {
+              console.log('Error sending message:', error);
+          });
 
-
-    messaging.send(message)
-      .then((response) => {
-        // console.log('Successfully sent message:', response);
-      })
-      .catch((error) => {
-        console.log('Error sending message:', error);
-      });
-    //==========================================
-
+      //==========================================
 
       // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking
-     // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking
-if (booking.iduser) {
-  // console.log(`Đang tìm email cho iduser: ${booking.iduser}`);
-  const userSnapshot = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
-  if (userSnapshot.empty) {
-      console.error(`Không tìm thấy user với iduser: ${booking.iduser}`);
-  } else {
-      const userData = userSnapshot.docs[0].data();
-      // console.log('Thông tin user tìm thấy:', userData);
-
-      if (userData['email']) {
-
-        const emailContent = `
+      if (booking.iduser) {
+          const userSnapshot = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
+          if (userSnapshot.empty) {
+              console.error(`Không tìm thấy user với iduser: ${booking.iduser}`);
+          } else {
+              const userData = userSnapshot.docs[0].data();
+              if (userData['email']) {
+                  const emailContent = `
                       <h2>Thông tin đặt lịch của bạn</h2>
                       <p><b>Tên khách hàng:</b> ${booking.tenKhachHang}</p>
                       <p><b>Số điện thoại:</b> ${booking.sdtNguoiDung}</p>
@@ -420,27 +451,23 @@ if (booking.iduser) {
                       <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
                   `;
 
-          const mailOptions = {
-              from: 'tiepdv220601@gmail.com',
-              to: userData['email'],
-              subject: 'Cập nhật trạng thái đơn hàng',
-              text: `Trạng thái đơn hàng ${idcthdbooking} của bạn đã được cập nhật thành: ${trangThai}.`,
-              html: emailContent
-          };
+                  const mailOptions = {
+                      from: 'tiepdv220601@gmail.com',
+                      to: userData['email'],
+                      subject: 'Cập nhật trạng thái đơn hàng',
+                      text: `Trạng thái đơn hàng ${idcthdbooking} của bạn đã được cập nhật thành: ${trangThai}.`,
+                      html: emailContent
+                  };
 
-          // console.log('MailOptions trước khi gửi:', mailOptions);
-
-          // Gửi email
-          await transporter.sendMail(mailOptions);
-          // console.log(`Email đã được gửi đến: ${userData['email']}`);
+                  // Gửi email
+                  await transporter.sendMail(mailOptions);
+              } else {
+                  console.error(`Không tìm thấy trường 'e-mail' cho iduser: ${booking.iduser}`);
+              }
+          }
       } else {
-          console.error(`Không tìm thấy trường 'e-mail' cho iduser: ${booking.iduser}`);
+          console.error('Booking không có iduser.');
       }
-  }
-} else {
-  console.error('Booking không có iduser.');
-}
-
 
       // Thêm thông báo vào bảng `Notifications` nếu trạng thái là "Hoàn thành"
       if (trangThai === 'Hoàn thành') {
@@ -455,6 +482,50 @@ if (booking.iduser) {
   } catch (error) {
       console.error("Lỗi khi cập nhật booking:", error);
       res.status(500).send('Lỗi khi cập nhật booking');
+  }
+});
+
+
+
+router.get('/searchbooking', async (req, res) => {
+  const { fromDate, toDate } = req.query;
+  try {
+      let bookingsSnapshot;
+      let isSearch = false;
+
+      // Kiểm tra nếu từ ngày và đến ngày được cung cấp
+      if (fromDate && toDate) {
+          console.log("Đang tìm kiếm bookings từ ngày:", fromDate, "đến ngày:", toDate);
+          isSearch = true;
+
+          // Convert string date to Firestore Timestamp
+          const fromTimestamp = admin.firestore.Timestamp.fromDate(new Date(fromDate));
+          const toTimestamp = admin.firestore.Timestamp.fromDate(new Date(toDate));
+
+          // Lọc theo ngày đặt lịch trong khoảng thời gian từ 'fromDate' đến 'toDate'
+          bookingsSnapshot = await db.collection('CTHDBooking')
+              .where('thoiGianDatLich', '>=', fromTimestamp)
+              .where('thoiGianDatLich', '<=', toTimestamp)
+              .get();
+      } else {
+          // Lấy toàn bộ bookings nếu không có tìm kiếm theo ngày
+          bookingsSnapshot = await db.collection('CTHDBooking').get();
+      }
+
+      const bookings = bookingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      // Hiển thị kết quả tìm kiếm
+      res.render('bookings', {
+          bookings,
+          currentPage: 1,
+          totalPages: 1,
+          fromDate: fromDate || '', // Trả lại giá trị fromDate
+          toDate: toDate || '',     // Trả lại giá trị toDate
+          isSearch
+      });
+  } catch (error) {
+      console.error('Lỗi khi tìm kiếm bookings:', error);
+      res.status(500).send('Lỗi khi tìm kiếm bookings.');
   }
 });
 
