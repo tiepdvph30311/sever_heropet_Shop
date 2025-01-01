@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const db = admin.firestore();
+const multer = require('multer');
+const { Storage } = require('@google-cloud/storage');
 
 // Hiển thị danh sách dịch vụ
 router.get('/', async (req, res) => {
@@ -19,14 +21,45 @@ router.get('/addService', (req, res) => {
   res.render('addService'); // Hiển thị form thêm dịch vụ
 });
 
+
+const bucketName = 'heropetshop-bc414.firebasestorage.app'
+
+const uploadImage = async (file) => {
+  const blob = bucket.file(file.originalname);
+  const blobStream = blob.createWriteStream({
+    metadata: {
+      contentType: file.mimetype,
+    },
+  });
+
+  return new Promise((resolve, reject) => {
+    blobStream.on('error', (err) => {
+      reject(err);
+    });
+
+    blobStream.on('finish', () => {
+      // Tạo URL công khai cho hình ảnh
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(file.originalname)}?alt=media`;
+      resolve(publicUrl);
+    });
+
+    blobStream.end(file.buffer);
+  });
+};
+
+const bucket = admin.storage().bucket();
+const multerMid = multer({ storage: multer.memoryStorage() });
+
 // Thêm dịch vụ
-router.post('/addService', async (req, res) => {
+router.post('/addService',multerMid.single('img'), async (req, res) => {
     const { tenDichVu, gia, moTa, thoiGian, hoatDong } = req.body;
+    const imageUrl = await uploadImage(req.file);
     try {
       const newService = {
         tenDichVu,
         gia: parseFloat(gia),
         moTa,
+        img: imageUrl,
         thoiGian:parseInt(thoiGian),
         hoatDong: hoatDong === 'on', // Checkbox gửi 'on' khi được chọn
       };
@@ -67,14 +100,15 @@ router.get('/edit-service/:id', async (req, res) => {
 });
 
 // Cập nhật dịch vụ
-router.post('/update-service/:id', async (req, res) => {
+router.post('/update-service/:id',multerMid.single('img'), async (req, res) => {
     const serviceId = req.params.id;
     const { tenDichVu, gia, moTa, thoiGian, hoatDong } = req.body;
-
+    const imageUrl = await uploadImage(req.file);
     const updatedService = {
       tenDichVu,
       gia: parseFloat(gia),
       moTa,
+      img: imageUrl,
       thoiGian :parseInt(thoiGian),
       hoatDong: hoatDong === 'on', // Kiểm tra nếu checkbox được chọn
     };

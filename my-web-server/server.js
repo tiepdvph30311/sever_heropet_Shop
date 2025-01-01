@@ -3,12 +3,15 @@ const admin = require('firebase-admin');
 const path = require('path');
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+const { Storage } = require('@google-cloud/storage');
 
 // Firebase Admin SDK initialization
 const serviceAccount = require('./serviceAccountKey.json');
+const bucketName = 'gs://heropetshop-bc414.firebasestorage.app'
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  storageBucket: bucketName
 });
 
 const db = admin.firestore();

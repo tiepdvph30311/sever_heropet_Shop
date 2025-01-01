@@ -13,7 +13,7 @@
   <div class="container mt-5">
     <h1 class="text-center mb-4">Thêm Dịch Vụ Mới</h1>
 
-    <form action="/services/addService" method="POST">
+    <form action="/services/addService" method="POST" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="tenDichVu" class="form-label">Tên Dịch Vụ</label>
         <input type="text" class="form-control" id="tenDichVu" name="tenDichVu" required>
@@ -32,6 +32,11 @@
       <div class="mb-3">
         <label for="thoiGian" class="form-label">Thời Gian</label>
         <input type="text" class="form-control" id="thoiGian" name="thoiGian" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="hinhanh" class="form-label">Hình ảnh (URL)</label>
+        <input type="file" class="form-control" id="img" name="img" required>
       </div>
 
       <div class="form-check mb-3">

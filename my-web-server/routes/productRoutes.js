@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const db = admin.firestore();
+const multer = require('multer');
+const { Storage } = require('@google-cloud/storage');
 
 // Route hiển thị danh sách sản phẩm
 router.get('/', async (req, res) => {
@@ -27,9 +29,39 @@ router.get('/add', async (req, res) => {
   }
 });
 
+
+const bucketName = 'heropetshop-bc414.firebasestorage.app'
+
+const uploadImage = async (file) => {
+  const blob = bucket.file(file.originalname);
+  const blobStream = blob.createWriteStream({
+    metadata: {
+      contentType: file.mimetype,
+    },
+  });
+
+  return new Promise((resolve, reject) => {
+    blobStream.on('error', (err) => {
+      reject(err);
+    });
+
+    blobStream.on('finish', () => {
+      // Tạo URL công khai cho hình ảnh
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(file.originalname)}?alt=media`;
+      resolve(publicUrl);
+    });
+
+    blobStream.end(file.buffer);
+  });
+};
+
+const bucket = admin.storage().bucket();
+const multerMid = multer({ storage: multer.memoryStorage() });
+
 // Thêm sản phẩm mới
-router.post('/add', async (req, res) => {
-  const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, hinhanh, type } = req.body;
+router.post('/add',multerMid.single('hinhanh'), async (req, res) => {
+  const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, type } = req.body;
+  const imageUrl = await uploadImage(req.file);
 
   try {
     const newProduct = {
@@ -40,7 +72,7 @@ router.post('/add', async (req, res) => {
       hansudung,
       soluong: parseInt(soluong),
       trongluong,
-      hinhanh,
+      hinhanh: imageUrl,
       type: parseInt(type),
     };
       
@@ -107,9 +139,10 @@ router.get('/ChiTietSP/:id', async (req, res) => {
 });
 
 // Route cập nhật sản phẩm
-router.post('/update/:id', async (req, res) => {
+router.post('/update/:id',multerMid.single('hinhanh'), async (req, res) => {
   const productId = req.params.id; // Lấy ID từ URL
-  const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, hinhanh, type } = req.body;
+  const { tensp, giatien, mota, loaisp, hansudung, soluong, trongluong, type } = req.body;
+  const imageUrl = await uploadImage(req.file);
 
   try {
     const updatedProduct = {
@@ -120,7 +153,7 @@ router.post('/update/:id', async (req, res) => {
       hansudung,
       soluong: parseInt(soluong),
       trongluong,
-      hinhanh,
+      hinhanh: imageUrl,
       type: parseInt(type),
     };
 

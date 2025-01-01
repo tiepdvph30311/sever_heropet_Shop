@@ -9,7 +9,7 @@
 <body>
   <div class="container mt-5">
     <h1 class="text-center mb-4">Cập nhật dịch vụ</h1>
-    <form action="/services/update-service/<%= service.idDichVu %>" method="POST">
+    <form action="/services/update-service/<%= service.idDichVu %>" method="POST" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="tenDichVu" class="form-label">Tên Dịch Vụ</label>
         <input type="text" class="form-control" id="tenDichVu" name="tenDichVu" value="<%= service.tenDichVu %>" required>
@@ -25,6 +25,10 @@
       <div class="mb-3">
         <label for="thoiGian" class="form-label">Thời Gian</label>
         <input type="text" class="form-control" id="thoiGian" name="thoiGian" value="<%= service.thoiGian %>" required>
+      </div>
+      <div class="mb-3">
+        <label for="hinhanh" class="form-label">Hình ảnh (URL)</label>
+        <input type="file" class="form-control" id="img" name="img" required>
       </div>
       <div class="mb-3">
         <label for="hoatDong" class="form-label">Hoạt Động</label>

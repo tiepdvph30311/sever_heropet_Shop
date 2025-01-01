@@ -13,7 +13,7 @@
   <div class="container mt-5">
     <h1 class="text-center mb-4">Thêm sản phẩm mới</h1>
 
-    <form action="/product/add" method="POST">
+    <form action="/product/add" method="POST" enctype="multipart/form-data">
       <div class="row g-3">
         <!-- Các input form -->
         <div class="col-md-6">
@@ -56,7 +56,7 @@
         </div>
         <div class="col-md-12">
           <label for="hinhanh" class="form-label">Hình ảnh (URL)</label>
-          <input type="text" class="form-control" id="hinhanh" name="hinhanh" placeholder="Nhập URL hình ảnh" required>
+          <input type="file" class="form-control" id="hinhanh" name="hinhanh" required>
         </div>
       </div>
       <div class="mt-3">
