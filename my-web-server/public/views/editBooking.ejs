@@ -93,46 +93,68 @@
     </div>
 
     <script>
-        document.getElementById("btn-huy").addEventListener("click", () => {
-          document.getElementById("reason-container").style.display = "block";
+      document.getElementById("btn-huy").addEventListener("click", () => {
+        document.getElementById("reason-container").style.display = "block";
+      });
+
+      const currentStatus = "<%= booking.trangThai %>"; // Trạng thái của booking hiện tại (ví dụ: Đang xử lý)
+
+      // Kiểm tra trạng thái hiện tại của booking
+      if (currentStatus === "Chưa xác nhận") {
+        // Nếu trạng thái là "Chưa xác nhận", chỉ hiển thị nút chuyển sang "Đã xác nhận" hoặc "Hủy"
+        const buttons = document.querySelectorAll('button[name="trangThai"]');
+        buttons.forEach((button) => {
+          if (button.value !== "Đã xác nhận" && button.value !== "Đã huỷ") {
+            button.disabled = true; // Vô hiệu hóa các nút không phải "Đã xác nhận" hoặc "Hủy"
+          }
         });
-      
-        const currentStatus = "<%= booking.trangThai %>"; // Trạng thái của booking hiện tại (ví dụ: Đang xử lý)
-      
-        // Kiểm tra trạng thái hiện tại của booking
-        if (currentStatus === "Chưa xác nhận") {
-          // Nếu trạng thái là "Chưa xác nhận", chỉ hiển thị nút chuyển sang "Đã xác nhận" hoặc "Hủy"
-          const buttons = document.querySelectorAll('button[name="trangThai"]');
-          buttons.forEach((button) => {
-            if (button.value !== "Đã xác nhận" && button.value !== "Đã huỷ") {
-              button.disabled = true; // Vô hiệu hóa các nút không phải "Đã xác nhận" hoặc "Hủy"
-            }
-          });
-        } else if (currentStatus === "Đã xác nhận") {
-          // Nếu trạng thái là "Đã xác nhận", chỉ hiển thị nút chuyển sang "Đang xử lý" hoặc "Hủy"
-          const buttons = document.querySelectorAll('button[name="trangThai"]');
-          buttons.forEach((button) => {
-            if (button.value !== "Đang xử lý" && button.value !== "Đã huỷ") {
-              button.disabled = true; // Vô hiệu hóa các nút không phải "Đang xử lý" hoặc "Hủy"
-            }
-          });
-        } else if (currentStatus === "Đang xử lý") {
-          // Nếu trạng thái là "Đang xử lý", chỉ hiển thị nút chuyển sang "Hoàn thành" hoặc "Hủy"
-          const buttons = document.querySelectorAll('button[name="trangThai"]');
-          buttons.forEach((button) => {
-            if (button.value !== "Hoàn thành" && button.value !== "Đã huỷ") {
-              button.disabled = true; // Vô hiệu hóa các nút không phải "Hoàn thành" hoặc "Hủy"
-            }
-          });
-      
-          // Ẩn nút "Hủy" khi trạng thái là "Đang xử lý"
-          document.getElementById("btn-huy").style.display = "inline-block";
-        } else {
-          // Nếu trạng thái là khác "Đang xử lý", nút "Hủy" sẽ hiển thị trở lại
-          document.getElementById("btn-huy").style.display = "inline-block";
-        }
-      </script>
-      
-      
+      } else if (currentStatus === "Đã xác nhận") {
+        // Nếu trạng thái là "Đã xác nhận", chỉ hiển thị nút chuyển sang "Đang xử lý" hoặc "Hủy"
+        const buttons = document.querySelectorAll('button[name="trangThai"]');
+        buttons.forEach((button) => {
+          if (button.value !== "Đang xử lý" && button.value !== "Đã huỷ") {
+            button.disabled = true; // Vô hiệu hóa các nút không phải "Đang xử lý" hoặc "Hủy"
+          }
+        });
+      } else if (currentStatus === "Đang xử lý") {
+        // Nếu trạng thái là "Đang xử lý", chỉ hiển thị nút chuyển sang "Hoàn thành" hoặc "Hủy"
+        const buttons = document.querySelectorAll('button[name="trangThai"]');
+        buttons.forEach((button) => {
+          if (button.value !== "Hoàn thành" && button.value !== "Đã huỷ") {
+            button.disabled = true; // Vô hiệu hóa các nút không phải "Hoàn thành" hoặc "Hủy"
+          }
+        });
+
+        // Ẩn nút "Hủy" khi trạng thái là "Đang xử lý"
+        document.getElementById("btn-huy").style.display = "inline-block";
+      }else if (currentStatus === "Đã huỷ") {
+        const buttons = document.querySelectorAll('button[name="trangThai"]');
+        buttons.forEach((button) => {
+          if (button.value !== "Đã huỷ") {
+            button.disabled = true; // Vô hiệu hóa các nút không phải "Hoàn thành" hoặc "Hủy"
+          }
+        });
+
+        document.getElementById("btn-huy").style.display = "inline-block";
+      }
+       else {
+        // Nếu trạng thái là khác "Đang xử lý", nút "Hủy" sẽ hiển thị trở lại
+        document.getElementById("btn-huy").style.display = "inline-block";
+      }
+      // Lấy phần tử input
+      const lyDoHuyInput = document.getElementById("lyDoHuy");
+
+      // Lấy giá trị từ ô nhập liệu
+      const lyDoHuyValue = lyDoHuyInput.value.trim(); // Dùng trim() để loại bỏ khoảng trắng
+
+      // Kiểm tra nếu ô nhập liệu trống
+      if (lyDoHuyValue === "") {
+        alert("Lý do hủy không được để trống.");
+        // Hoặc có thể hiển thị thông báo lỗi khác, tùy theo yêu cầu
+      } else {
+        // Thực hiện hành động khi ô nhập liệu không trống
+        console.log("Lý do hủy:", lyDoHuyValue);
+      }
+    </script>
   </body>
 </html>

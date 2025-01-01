@@ -15,126 +15,139 @@ const transporter = nodemailer.createTransport({
 });
 
 
+
+
 // router.get('/', async (req, res) => {
-//     try {
-//         const page = parseInt(req.query.page) || 1; // Trang hiện tại
-//         const pageSize = 10; // Số lượng phần tử trên mỗi trang
-//         const startAt = (page - 1) * pageSize;
+//   try {
+//       const { fromDate, toDate,phoneNumber } = req.query; // Get the date range from the query parameters
+//       const page = parseInt(req.query.page) || 1; // Trang hiện tại
+//       const pageSize = 50; // Số lượng phần tử trên mỗi trang
+//       const startAt = (page - 1) * pageSize;
 
-//         // Lấy danh sách bookings có phân trang
-//         const snapshot = await db.collection('CTHDBooking')
-//             .orderBy('thoiGianDatLich', 'desc') // Sắp xếp giảm dần
-//             .offset(startAt)
-//             .limit(pageSize)
-//             .get();
+//       let query = db.collection('CTHDBooking').orderBy('thoiGianDatLich', 'desc'); // Sắp xếp giảm dần
 
-//         const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+//       // Filter by date range if fromDate and toDate are provided
+//       if (fromDate && toDate) {
+//           query = query.where('thoiGianDatLich', '>=', new Date(fromDate))
+//                        .where('thoiGianDatLich', '<=', new Date(toDate));
+//       }
+//       if (phoneNumber) {
+//         query.sdtNguoiDung = phoneNumber;
+//       }
 
-//         // Lấy thông tin Profile từ User → Profile cho mỗi booking
-//         for (let booking of bookings) {
-//             if (booking.iduser) {
-//                 const profilesSnapshot = await db.collection('User')
-//                     .doc(booking.iduser)
-//                     .collection('Profile')
-//                     .get();
+//       // Fetch the bookings with pagination
+//       const snapshot = await query.offset(startAt).limit(pageSize).get();
 
-//                 if (!profilesSnapshot.empty) {
-//                     const profileData = profilesSnapshot.docs[0].data();
-//                     booking.hoten = profileData.hoten || 'Không xác định';
-//                     booking.sdt = profileData.sdt || 'Không xác định';
-//                 } else {
-//                     booking.hoten = 'Không xác định';
-//                     booking.sdt = 'Không xác định';
-//                 }
-//             } else {
-//                 booking.hoten = 'Không xác định';
-//                 booking.sdt = 'Không xác định';
-//             }
-//         }
+//       const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-//         // Tổng số lượng bản ghi
-//         const totalSnapshot = await db.collection('CTHDBooking').get();
-//         const totalRecords = totalSnapshot.size;
-//         const totalPages = Math.ceil(totalRecords / pageSize);
+//       // Fetch profile info for each booking
+//       for (let booking of bookings) {
+//           if (booking.iduser) {
+//               const profilesSnapshot = await db.collection('User')
+//                   .doc(booking.iduser)
+//                   .collection('Profile')
+//                   .get();
 
-//         res.render('bookings', {
-//             bookings,
-//             currentPage: page,
-//             totalPages: totalPages,
-//             hoten: '' // Giá trị mặc định của hoten
-//         });
-//     } catch (error) {
-//         console.error('Lỗi khi tải danh sách bookings:', error);
-//         res.status(500).send('Lỗi khi tải danh sách bookings');
-//     }
+//               if (!profilesSnapshot.empty) {
+//                   const profileData = profilesSnapshot.docs[0].data();
+//                   booking.hoten = profileData.hoten || 'Không xác định';
+//                   booking.sdt = profileData.sdt || 'Không xác định';
+//               } else {
+//                   booking.hoten = 'Không xác định';
+//                   booking.sdt = 'Không xác định';
+//               }
+//           } else {
+//               booking.hoten = 'Không xác định';
+//               booking.sdt = 'Không xác định';
+//           }
+//       }
+
+//       // Get the total count of bookings for pagination
+//       const totalSnapshot = await db.collection('CTHDBooking').get();
+//       const totalRecords = totalSnapshot.size;
+//       const totalPages = Math.ceil(totalRecords / pageSize);
+
+//       res.render('bookings', {
+//           bookings,
+//           currentPage: page,
+//           totalPages: totalPages,
+//           fromDate: fromDate || '', // Pass the fromDate to the template
+//           toDate: toDate || '',     // Pass the toDate to the template
+//           phoneNumber
+//       });
+//   } catch (error) {
+//       console.error('Error loading bookings:', error);
+//       res.status(500).send('Error loading bookings');
+//   }
 // });
 
-// chi tiết đơn hàng
-
 router.get('/', async (req, res) => {
-  try {
-      const { fromDate, toDate,phoneNumber } = req.query; // Get the date range from the query parameters
+    try {
+      const { fromDate, toDate, phoneNumber } = req.query; // Get the date range from the query parameters
       const page = parseInt(req.query.page) || 1; // Trang hiện tại
       const pageSize = 50; // Số lượng phần tử trên mỗi trang
       const startAt = (page - 1) * pageSize;
-
-      let query = db.collection('CTHDBooking').orderBy('thoiGianDatLich', 'desc'); // Sắp xếp giảm dần
-
-      // Filter by date range if fromDate and toDate are provided
+  
+      // Lọc theo ngày nếu có
+      let query = db.collection('CTHDBooking').orderBy('thoiGianDatLich', 'desc'); // Sắp xếp giảm dần theo thời gian
+  
       if (fromDate && toDate) {
-          query = query.where('thoiGianDatLich', '>=', new Date(fromDate))
-                       .where('thoiGianDatLich', '<=', new Date(toDate));
+        query = query.where('thoiGianDatLich', '>=', new Date(fromDate))
+                     .where('thoiGianDatLich', '<=', new Date(toDate));
       }
-      if (phoneNumber) {
-        query.sdtNguoiDung = phoneNumber;
-      }
-
+  
       // Fetch the bookings with pagination
       const snapshot = await query.offset(startAt).limit(pageSize).get();
-
-      const bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      // Fetch profile info for each booking
-      for (let booking of bookings) {
-          if (booking.iduser) {
-              const profilesSnapshot = await db.collection('User')
-                  .doc(booking.iduser)
-                  .collection('Profile')
-                  .get();
-
-              if (!profilesSnapshot.empty) {
-                  const profileData = profilesSnapshot.docs[0].data();
-                  booking.hoten = profileData.hoten || 'Không xác định';
-                  booking.sdt = profileData.sdt || 'Không xác định';
-              } else {
-                  booking.hoten = 'Không xác định';
-                  booking.sdt = 'Không xác định';
-              }
-          } else {
-              booking.hoten = 'Không xác định';
-              booking.sdt = 'Không xác định';
-          }
+  
+      let bookings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
+      // Nếu có sdtNguoiDung, lọc thêm
+      if (phoneNumber) {
+        bookings = bookings.filter(booking => booking.sdtNguoiDung === phoneNumber);
       }
-
-      // Get the total count of bookings for pagination
+  
+      // Fetch thông tin người dùng cho từng booking
+      for (let booking of bookings) {
+        if (booking.iduser) {
+          const profilesSnapshot = await db.collection('User')
+            .doc(booking.iduser)
+            .collection('Profile')
+            .get();
+  
+          if (!profilesSnapshot.empty) {
+            const profileData = profilesSnapshot.docs[0].data();
+            booking.hoten = profileData.hoten || 'Không xác định';
+            booking.sdt = profileData.sdt || 'Không xác định';
+          } else {
+            booking.hoten = 'Không xác định';
+            booking.sdt = 'Không xác định';
+          }
+        } else {
+          booking.hoten = 'Không xác định';
+          booking.sdt = 'Không xác định';
+        }
+      }
+  
+      // Lấy tổng số bản ghi cho phân trang
       const totalSnapshot = await db.collection('CTHDBooking').get();
       const totalRecords = totalSnapshot.size;
       const totalPages = Math.ceil(totalRecords / pageSize);
-
+  
       res.render('bookings', {
-          bookings,
-          currentPage: page,
-          totalPages: totalPages,
-          fromDate: fromDate || '', // Pass the fromDate to the template
-          toDate: toDate || '',     // Pass the toDate to the template
-          phoneNumber
+        bookings,
+        currentPage: page,
+        totalPages: totalPages,
+        fromDate: fromDate || '', // Truyền từ ngày vào template
+        toDate: toDate || '',     // Truyền đến ngày vào template
+        phoneNumber
       });
-  } catch (error) {
+    } catch (error) {
       console.error('Error loading bookings:', error);
       res.status(500).send('Error loading bookings');
-  }
-});
-
+    }
+  });
+  
+  
 router.get('/:idcthdbooking', async (req, res) => {
     const { idcthdbooking } = req.params;
     try {
