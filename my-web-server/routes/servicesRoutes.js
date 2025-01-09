@@ -102,13 +102,37 @@ router.get('/edit-service/:id', async (req, res) => {
 // Cập nhật dịch vụ
 router.post('/update-service/:id',multerMid.single('img'), async (req, res) => {
     const serviceId = req.params.id;
-    const { tenDichVu, gia, moTa, thoiGian, hoatDong } = req.body;
-    const imageUrl = await uploadImage(req.file);
+    const { tenDichVu, gia, moTa, thoiGian, hoatDong, anh } = req.body;
+    
+    let hinhanhUrl = anh;
+
+    if (req.file) {
+      const blob = bucket.file(req.file.originalname);
+      const blobStream = blob.createWriteStream({
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
+
+      await new Promise((resolve, reject) => {
+        blobStream.on('error', (err) => {
+          reject(err);
+        });
+
+        blobStream.on('finish', () => {
+          hinhanhUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(req.file.originalname)}?alt=media`;
+          resolve();
+        });
+
+        blobStream.end(req.file.buffer);
+      });
+    }
+
     const updatedService = {
       tenDichVu,
       gia: parseFloat(gia),
       moTa,
-      img: imageUrl,
+      img: hinhanhUrl ,
       thoiGian :parseInt(thoiGian),
       hoatDong: hoatDong === 'on', // Kiểm tra nếu checkbox được chọn
     };

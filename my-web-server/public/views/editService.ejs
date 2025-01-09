@@ -28,7 +28,8 @@
       </div>
       <div class="mb-3">
         <label for="hinhanh" class="form-label">Hình ảnh (URL)</label>
-        <input type="file" class="form-control" id="img" name="img" required>
+        <input type="file" class="form-control" id="img" value="<%= service.img %>" name="img" >
+        <input type="text" style="display: none;" class="form-control" id="anh" value="<%= service.img %>" name="anh" required>
       </div>
       <div class="mb-3">
         <label for="hoatDong" class="form-label">Hoạt Động</label>
