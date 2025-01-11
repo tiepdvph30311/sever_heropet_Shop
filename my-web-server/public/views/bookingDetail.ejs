@@ -63,7 +63,7 @@
               <th scope="row">Trạng thái đơn</th>
               <td><%= booking.trangThai || 'Không xác định' %></td>
             </tr>
-            <% if (booking.trangThai === 'Đã huỷ') { %>
+            <% if (booking.trangThai === 'Đã hủy') { %>
             <tr>
               <th scope="row">Lý do hủy</th>
               <td><%= booking.lyDoHuy || 'Không có lý do' %></td>
