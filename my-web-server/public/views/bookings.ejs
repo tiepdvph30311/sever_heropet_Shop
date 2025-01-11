@@ -116,7 +116,7 @@
           <tbody>
             <% if (bookings.length > 0) { %>
               <% bookings.forEach(booking => { %>
-                <tr class="<%= booking.trangThai === 'Đã huỷ' ? 'table-danger' : '' %>">
+                <tr class="<%= booking.trangThai === 'Đã hủy' ? 'table-danger' : '' %>">
                   <td><%= booking.canNang %> kg</td>
                   <td><%= booking.tenKhachHang %></td>
                   <td><%= booking.sdtNguoiDung %></td>
@@ -130,12 +130,12 @@
                       Không xác định
                     <% } %>
                   </td>
-                  <td class="<%= booking.trangThai === 'Hoàn thành' ? 'text-success' : booking.trangThai === 'Đã huỷ' ? 'text-danger' : '' %>">
+                  <td class="<%= booking.trangThai === 'Hoàn thành' ? 'text-success' : booking.trangThai === 'Đã hủy' ? 'text-danger' : '' %>">
                     <%= booking.trangThai || 'Không xác định' %>
                   </td>
                   <td>
-                    <% if (booking.trangThai === 'Đã huỷ') { %>
-                      <span class="text-muted">Không thể sửa (Đã huỷ)</span>
+                    <% if (booking.trangThai === 'Đã hủy') { %>
+                      <span class="text-muted">Không thể sửa (Đã hủy)</span>
                     <% } else if (booking.trangThai === 'Hoàn thành') { %>
                       <span class="text-muted">Không thể sửa (Hoàn thành)</span>
                     <% } else { %>

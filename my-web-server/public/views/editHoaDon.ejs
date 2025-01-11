@@ -108,12 +108,27 @@
       </div>
       <div class="mb-3">
         <label for="trangthai" class="form-label">Trạng Thái:
-          <select id="trangthai" name="trangthai" required>
-            <option value="1">Đang xử lý</option>
-            <option value="2">Đang giao hàng</option>
-            <option value="3">Giao hàng thành công</option>
-            <option value="4">Hủy hàng</option>
-          </select>
+            <% if(HoaDon.trangthai==1){ %>
+
+              <select id="trangthai" name="trangthai" required>
+                <option value="1">Đang xử lý</option>
+                <option value="2">Đang giao hàng</option>
+                <option value="4">Hủy hàng</option>
+              </select>
+              <% } %>
+                <% if(HoaDon.trangthai==2){ %>
+                  <select id="trangthai" name="trangthai" required>
+                    <option value="2">Đang giao hàng</option>
+                    <option value="3">Giao hàng thành công</option>
+                  </select>
+                  <% } %>
+                    <% if(HoaDon.trangthai==3){ %>
+
+                      <p style="color: rgb(0, 255, 26);">Giao hàng thành công</p>
+                      <% } %>
+                        <% if(HoaDon.trangthai==4){ %>
+                          <p style="color: red;">Hủy hàng</p>
+                          <% } %>
         </label>
       </div>
 

@@ -412,7 +412,7 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
 
       // Cập nhật trạng thái đơn hàng
       const updateData = { trangThai };
-      if (trangThai === 'Đã huỷ' && lyDoHuy) {
+      if (trangThai === 'Đã hủy' && lyDoHuy) {
           updateData.lyDoHuy = lyDoHuy; // Lưu lý do huỷ nếu trạng thái là huỷ
       }
 

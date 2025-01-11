@@ -198,7 +198,7 @@ router.post('/editHoaDon/:id', async (req, res) => {
     }
 
 
-    res.redirect('/HoaDon'); // Quay lại danh sách booking sau khi sửa
+    res.redirect('/HoaDon/editHoaDon/'+HoaDon.id); // Quay lại danh sách booking sau khi sửa
   } catch (error) {
     console.error("Lỗi khi cập nhật HoaDon:", error);
     res.status(500).send('Lỗi khi cập nhật HoaDon');

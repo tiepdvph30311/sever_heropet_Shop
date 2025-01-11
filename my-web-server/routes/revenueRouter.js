@@ -25,7 +25,7 @@ router.get('/monthly', async (req, res) => {
 
     // Truy vấn đơn "Hủy" trong năm
     const cancelledQuery = db.collection('CTHDBooking')
-      .where('trangThai', '==', 'Hủy')
+      .where('trangThai', '==', 'Đã hủy')
       .where('thoiGianDatLich', '>=', admin.firestore.Timestamp.fromDate(startOfYear))
       .where('thoiGianDatLich', '<=', admin.firestore.Timestamp.fromDate(endOfYear));
 
