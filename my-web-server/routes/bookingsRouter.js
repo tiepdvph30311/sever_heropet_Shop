@@ -346,58 +346,101 @@ router.get('/:idcthdbooking', async (req, res) => {
   });
 
     
+// router.get('/details/:idcthdbooking', async (req, res) => {
+//     const { idcthdbooking } = req.params;
+//     try {
+//       const snapshot = await db.collection('CTHDBooking').where('idcthdbooking', '==', idcthdbooking).get();
+//       if (snapshot.empty) {
+//         return res.status(404).send('Booking not found');
+//       }
+//       const booking = snapshot.docs[0].data();
+  
+//       // Fetch user profile information
+//       let userProfile = {};
+//       if (booking.iduser) {
+//         const profilesSnapshot = await db.collection('User')
+//           .doc(booking.iduser)
+//           .collection('Profile')
+//           .get();
+  
+//         if (!profilesSnapshot.empty) {
+//           userProfile = profilesSnapshot.docs[0].data();
+//         }
+//       }
+  
+//       // Fetch service details using serviceIds
+//       const serviceDetails = [];
+//       if (booking.serviceIds && Array.isArray(booking.serviceIds)) {
+//         for (const serviceId of booking.serviceIds) {
+//           const serviceSnapshot = await db.collection('services').doc(serviceId).get();
+//           if (serviceSnapshot.exists) {
+//             serviceDetails.push(serviceSnapshot.data());
+//           }
+//         }
+//       }
+  
+//       // Calculate the total price of all services
+//       const totalServicePrice = serviceDetails.reduce((total, service) => total + service.gia, 0);
+  
+//       // Calculate the additional fee
+//       const additionalFee = booking.giaDichVu - totalServicePrice;
+  
+//       res.render('bookingDetail', {
+//         booking,
+//         userProfile,
+//         serviceDetails,
+//         totalServicePrice,
+//         additionalFee
+//       });
+//     } catch (error) {
+//       console.error('Error fetching booking details:', error);
+//       res.status(500).send('Error fetching booking details');
+//     }
+//   });
+  
 router.get('/details/:idcthdbooking', async (req, res) => {
     const { idcthdbooking } = req.params;
+    // console.log('ID CTHDBooking:', idcthdbooking);
     try {
-      const snapshot = await db.collection('CTHDBooking').where('idcthdbooking', '==', idcthdbooking).get();
-      if (snapshot.empty) {
-        return res.status(404).send('Booking not found');
-      }
-      const booking = snapshot.docs[0].data();
-  
-      // Fetch user profile information
-      let userProfile = {};
-      if (booking.iduser) {
-        const profilesSnapshot = await db.collection('User')
-          .doc(booking.iduser)
-          .collection('Profile')
-          .get();
-  
-        if (!profilesSnapshot.empty) {
-          userProfile = profilesSnapshot.docs[0].data();
+        const snapshot = await db.collection('CTHDBooking').where('idcthdbooking', '==', idcthdbooking).get();
+        if (snapshot.empty) {
+            return res.status(404).send('Booking not found');
         }
-      }
-  
-      // Fetch service details using serviceIds
-      const serviceDetails = [];
-      if (booking.serviceIds && Array.isArray(booking.serviceIds)) {
-        for (const serviceId of booking.serviceIds) {
-          const serviceSnapshot = await db.collection('services').doc(serviceId).get();
-          if (serviceSnapshot.exists) {
-            serviceDetails.push(serviceSnapshot.data());
-          }
+        const booking = snapshot.docs[0].data();
+
+        // Fetch service details from CTBooking based on idcthdbooking
+        const serviceDetails = [];
+        const ctBookingSnapshot = await db.collection('CTBooking')
+            .where('idcthdbooking', '==', idcthdbooking)
+            .get();
+
+        if (!ctBookingSnapshot.empty) {
+            ctBookingSnapshot.forEach(doc => {
+                const service = doc.data();
+                serviceDetails.push(service);
+            });
         }
-      }
-  
-      // Calculate the total price of all services
-      const totalServicePrice = serviceDetails.reduce((total, service) => total + service.gia, 0);
-  
-      // Calculate the additional fee
-      const additionalFee = booking.giaDichVu - totalServicePrice;
-  
-      res.render('bookingDetail', {
-        booking,
-        userProfile,
-        serviceDetails,
-        totalServicePrice,
-        additionalFee
-      });
+
+        // console.log('Service Details:', serviceDetails);
+
+        // Calculate the total price of all services
+        const totalServicePrice = serviceDetails.reduce((total, service) => total + service.gia, 0);
+
+        // Calculate the additional fee
+        const additionalFee = booking.giaDichVu - totalServicePrice;
+
+        res.render('bookingDetail', {
+            booking,
+            serviceDetails,
+            totalServicePrice,
+            additionalFee
+        });
     } catch (error) {
-      console.error('Error fetching booking details:', error);
-      res.status(500).send('Error fetching booking details');
+        console.error('Error fetching booking details:', error);
+        res.status(500).send('Error fetching booking details');
     }
-  });
-  
+});
+
 router.get('/searchbooking', async (req, res) => {
     const { tenKhachHang } = req.query;
     try {

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Booking Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết hóa đơn</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
@@ -21,7 +22,9 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="text-center text-primary mb-4">Chi tiết hoá đơn</h1>
+    <h1 class="text-center text-primary mb-4">Chi tiết hóa đơn</h1>
+
+    <!-- Thông tin khách hàng -->
     <div class="card mb-4">
       <div class="card-header bg-primary text-white">
         Thông tin khách hàng
@@ -34,7 +37,7 @@
               <td><%= booking.tenKhachHang || 'Không xác định' %></td>
             </tr>
             <tr>
-              <th scope="row">Số điện thoại liên hệ</th>
+              <th scope="row">Số điện thoại</th>
               <td><%= booking.sdtNguoiDung || 'Không xác định' %></td>
             </tr>
             <tr>
@@ -60,7 +63,7 @@
               </td>
             </tr>
             <tr>
-              <th scope="row">Trạng thái đơn</th>
+              <th scope="row">Trạng thái đơn hàng</th>
               <td><%= booking.trangThai || 'Không xác định' %></td>
             </tr>
             <% if (booking.trangThai === 'Đã hủy') { %>
@@ -71,7 +74,7 @@
             <% } %>
             <% if (additionalFee > 0) { %>
             <tr>
-              <th scope="row">Phí phát sinh (cân nặng thú cưng > 15 kg)</th>
+              <th scope="row">Phí phát sinh</th>
               <td><%= additionalFee.toLocaleString() %> VND</td>
             </tr>
             <% } %>
@@ -84,37 +87,44 @@
       </div>
     </div>
 
-    <div class="card">
+    <!-- Danh sách dịch vụ -->
+    <div class="card mb-4">
       <div class="card-header bg-primary text-white">
-        Danh sách dịch vụ
+        Danh sách dịch vụ đã sử dụng
       </div>
       <div class="card-body">
         <% if (serviceDetails.length > 0) { %>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">STT</th>
-                <th scope="col">Tên dịch vụ</th>
-                <th scope="col">Giá (VND)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% serviceDetails.forEach((service, index) => { %>
-                <tr>
-                  <th scope="row"><%= index + 1 %></th>
-                  <td><%= service.tenDichVu %></td>
-                  <td><%= service.gia.toLocaleString() %></td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tên dịch vụ</th>
+                        <th scope="col">Giá (VND)</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Thành tiền (VND)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% serviceDetails.forEach((service, index) => { %>
+                        <tr>
+                            <th scope="row"><%= index + 1 %></th>
+                            <td><%= service.tenDichVu || 'Không xác định' %></td>
+                            <td><%= service.giaDichVu ? service.giaDichVu.toLocaleString() : '0' %></td>
+                            <td><%= service.soLuong || 1 %></td>
+                            <td><%= (service.giaDichVu * (service.soLuong || 1)).toLocaleString() %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
         <% } else { %>
-          <p class="text-muted">Không có dịch vụ nào.</p>
+            <p class="text-muted">Không có dịch vụ nào được sử dụng.</p>
+            <% console.log('Không có dịch vụ trong serviceDetails:', serviceDetails); %>
         <% } %>
-      </div>
+    </div>
+    
     </div>
 
-    <a href="/bookings" class="btn btn-secondary btn-back">Quay Lại</a>
+    <a href="/bookings" class="btn btn-secondary btn-back">Quay lại</a>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
