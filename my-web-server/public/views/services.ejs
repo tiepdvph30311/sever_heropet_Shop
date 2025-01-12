@@ -1,76 +1,89 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danh sách Dịch Vụ</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .main-content{
-      margin-left: 210px;
+    .main-content {
+      margin-left: 173px;
+      max-height: 100%;
+      background-size: cover;
+      background-attachment: fixed;
+      padding: 20px;
     }
- 
+    
   </style>
 </head>
+
 <body>
 
-  <div class="d-flex position-relative">
-    
-  <%- include('../views/hader.ejs') %>
-    <div class="main-content">
-      <div class="container mt-5">
-        <h1 class="text-center ">Danh sách Dịch Vụ</h1>
-        <a style="margin-bottom: 30px;" href="/services/addService" class="btn btn-outline-primary">Thêm Dịch Vụ Mới</a>
-        <div class="table-responsive">
-          <table class="table table-striped table-bordered table-hover">
-            <thead>
-              <tr>
-                <th>Ảnh</th>
-                <th>Tên Dịch Vụ</th>
-                <th>Giá</th>
-                <th>Mô Tả</th>
-                <th>Thời Gian</th>
-                <th>Hoạt Động</th>
-                <th>Sửa</th>
-                <th>Xóa</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (services.length > 0) { %>
-                <% services.forEach(service => { %>
-                  <tr>
-                     <td>
-                    <img src="<%= service.img %>" class="img-fluid text-center" width="200px" height="200px">
-                  </td>
-                    <td><%= service.tenDichVu %></td>
-                    <td><%= service.gia %> VNĐ</td>
-                    <td><%= service.moTa %></td>
-                    <td><%= service.thoiGian %></td>
-                    <td><%= service.hoatDong ? 'Đang hoạt động' : 'Ngừng hoạt động' %></td>
-                    <td>
-                        <a href="/services/edit-service/<%= service.idDichVu %>" class="btn btn-outline-warning">Sửa</a>            
-                    </td>
-                  <td>
-                      <form action="/services/delete-service/<%= service.idDichVu %>" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
-                        <button type="submit" class="btn btn-outline-danger">Xóa</button>
-                      </form>
-                    </td>
-                  </tr>
-                <% }); %>
-              <% } else { %>
+  <div class="">
+
+    <%- include('../views/hader.ejs') %>
+      <div class="main-content">
+        <div class="">
+          <h1 class="text-center ">Danh sách Dịch Vụ</h1>
+          <a style="margin-bottom: 30px;" href="/services/addService" class="btn btn-outline-primary">Thêm Dịch Vụ
+            Mới</a>
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+              <thead>
                 <tr>
-                  <td colspan="7" class="text-center">Không có dịch vụ nào hiện có.</td>
+                  <th>Ảnh</th>
+                  <th>Tên Dịch Vụ</th>
+                  <th>Giá</th>
+                  <th>Mô Tả</th>
+                  <th>Thời Gian</th>
+                  <th>Hoạt Động</th>
+                  <th>Sửa</th>
                 </tr>
-              <% } %>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <% if (services.length> 0) { %>
+                  <% services.forEach(service=> { %>
+                    <tr>
+                      <td>
+                        <img src="<%= service.img %>" class="img-fluid text-center" width="200px" height="200px">
+                      </td>
+                      <td>
+                        <%= service.tenDichVu %>
+                      </td>
+                      <td>
+                        <%= service.gia %> VNĐ
+                      </td>
+                      <td>
+                        <%= service.moTa %>
+                      </td>
+                      <td>
+                        <%= service.thoiGian %>
+                      </td>
+                      <td>
+                        <%= service.hoatDong ? 'Đang hoạt động' : 'Ngừng hoạt động' %>
+                      </td>
+                      <td>
+                        <a href="/services/edit-service/<%= service.idDichVu %>" class="btn btn-outline-warning">Sửa</a>
+                      </td>
+                     
+                    </tr>
+                    <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="7" class="text-center">Không có dịch vụ nào hiện có.</td>
+                        </tr>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
   </div>
-  
 
-  
+
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

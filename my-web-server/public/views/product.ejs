@@ -7,111 +7,111 @@
   <title>Danh sách sản phẩm</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .main-content{
-      margin-left: 210px;
+    .main-content {
+      margin-left: 173px;
+      background-color: #EEEEEE;
+      height: 100%;
+      background-size: cover;
+      background-attachment: fixed;
+      padding: 20px;
     }
- 
+
+   
   </style>
 </head>
 
 <body>
 
 
-  <div class="d-flex position-relative">
+  <div class="">
+    <div>
+      <%- include('../views/hader.ejs') %>
+    </div>
+    <div class="main-content">
 
-    <%- include('../views/hader.ejs') %>
-      <div class="main-content">
-        <div class="container mt-5">
+      <h1 class="text-center mb-4">Danh sách sản phẩm</h1>
 
-            <h1 class="text-center mb-4">Danh sách sản phẩm</h1>
-
-            <div class="card mb-4">
-              <div class="card-body">
-                <h5 class="card-title">Thêm sản phẩm mới</h5>
-                <a href="/product/add" class="btn btn-outline-primary">Thêm sản phẩm</a>
-              </div>
-            </div>
-
-
-            <table id="amthucTable" class="table table-striped table-bordered table-hover">
-              <thead class="thead-dark">
-                <tr>
-                  <th class="text-center">Ảnh</th>
-                  <th class="text-center">Tên</th>
-                  <th class="text-center">Giá</th>
-                  <th class="text-center">Loại</th>
-                  <th class="text-center">Số lượng</th>
-                  <th class="text-center">Chi tiết</th>
-                  <th class="text-center">Sửa SP</th>
-                  <th class="text-center">Xóa SP</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% products.forEach(product=> { %>
-                  <tr>
-                    <td>
-                      <img src="<%= product.hinhanh %>" class="img-fluid text-center" style="max-width: 120px;"
-                        alt="<%= product.tense %>">
-                    </td>
-                    <td>
-
-
-                      <p class="card-text text-center">
-                        <%= product.tensp %>
-                      </p>
-                    </td>
-                    <td>
-
-                      <p class="card-text text-center">
-                        <%= product.giatien %> VNĐ
-                      </p>
-                    </td>
-                    <td>
-
-                      <p class="card-text text-center">
-                        <%= product.loaisp %>
-                      </p>
-                      
-                    </td>
-                    
-                    
-                     <td>
-
-                      <p class="card-text text-center">
-                        <%= product.soluong %>
-                        
-                      </p>
-                    </td>
-
-                    <td>
-                      <a href="/product/ChiTietSP/<%= product.id %>" class="btn btn-outline-info">Chi Tiết</a>
-                    </td>
-                    <td>
-                      <a href="/product/edit/<%= product.id %>" class="btn btn-outline-warning">Sửa</a>
-                    </td>
-                    <td>
-                      <form action="/product/delete/<%= product.id %>" method="POST"
-                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')" style="margin: 0;">
-                        <button type="submit" class="btn btn-outline-danger">Xóa</button>
-                      </form>
-                    </td>
-                  </tr>
-                  <% }); %>
-              </tbody>
-            </table>
-
-
-
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Thêm sản phẩm mới</h5>
+          <a href="/product/add" class="btn btn-outline-primary">Thêm sản phẩm</a>
         </div>
       </div>
 
 
+      <table id="amthucTable" class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th class="text-center">Ảnh</th>
+            <th class="text-center">Tên</th>
+            <th class="text-center">Giá</th>
+            <th class="text-center">Loại</th>
+            <th class="text-center">Số lượng</th>
+            <th class="text-center">Chi tiết</th>
+            <th class="text-center">Sửa SP</th>
+            <th class="text-center">Xóa SP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(product=> { %>
+            <tr>
+              <td>
+                <img src="<%= product.hinhanh %>" class="img-fluid text-center" style="max-width: 120px;"
+                  alt="<%= product.tense %>">
+              </td>
+              <td>
+
+
+                <p class="card-text text-center">
+                  <%= product.tensp %>
+                </p>
+              </td>
+              <td>
+
+                <p class="card-text text-center">
+                  <%= product.giatien %> VNĐ
+                </p>
+              </td>
+              <td>
+
+                <p class="card-text text-center">
+                  <%= product.loaisp %>
+                </p>
+
+              </td>
+
+
+              <td>
+
+                <p class="card-text text-center">
+                  <%= product.soluong %>
+
+                </p>
+              </td>
+
+              <td>
+                <a href="/product/ChiTietSP/<%= product.id %>" class="btn btn-outline-info">Chi Tiết</a>
+              </td>
+              <td>
+                <a href="/product/edit/<%= product.id %>" class="btn btn-outline-warning">Sửa</a>
+              </td>
+              <td>
+                <form action="/product/delete/<%= product.id %>" method="POST"
+                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')" style="margin: 0;">
+                  <button type="submit" class="btn btn-outline-danger">Xóa</button>
+                </form>
+              </td>
+            </tr>
+            <% }); %>
+        </tbody>
+      </table>
 
 
 
+    </div>
 
-
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

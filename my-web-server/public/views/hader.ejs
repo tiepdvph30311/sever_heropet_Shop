@@ -102,20 +102,25 @@
       width: 250px;
     }
 
+ 
+
     #side_nav {
-      background: #FFCCFF;
+      background: #FFFFFF;
       position: fixed;
       left: 0;
       top: 0;
       height: 100%;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
     }
+    
+   
 
     .sidebar li a:hover {
       color: red;
     }
 
     nav {
-      padding: 20px;
+      justify-content: center;
     }
 
     nav ul {
@@ -135,6 +140,16 @@
       display: flex;
       align-items: center;
       padding: 5px;
+    }
+
+    nav li:hover{
+      background-color: #EEEEEE;
+      border-radius:10px ;
+      /* padding: 0px 10px 0px 10px; */
+    }
+    nav li{
+      padding-left: 10px;
+      margin: 10px 0px 10px 0px;
     }
 
     .submenu {
@@ -164,52 +179,6 @@
       </h1>
     </div>
 
-    <!-- <ul  class="list-unstyled kt-menu__nav">
-      <li class=""><a href="/home" class="text-decoration-none px-3 py-2 d-block" role="link">
-          Home</a></li>
-      <li class=""><a href="/services" class="text-decoration-none px-3 py-2 d-block" role="link">
-          Dịch vụ</a></li>
-      <li class=""><a href="/product" class="text-decoration-none px-3 py-2 d-block" role="link">
-          Sản phẩm</a></li>
-      <li class=""><a href="/bookings" class="text-decoration-none px-3 py-2 d-block">
-          Đặt lịch</a></li>
-      <li class=""><a href="/notifications" class="text-decoration-none px-3 py-2 d-block">
-          notifications</a></li>
-      <li class=""><a href="/nguoidung" class="text-decoration-none px-3 py-2 d-block">
-          nguoi dung</a></li>
-      <li class=""><a href="/revenue/monthly" class="text-decoration-none px-3 py-2 d-block">
-          doanh thu theo thang </a></li>
-      <li class=""><a href="/doanhthu" class="text-decoration-none px-3 py-2 d-block">
-          Doanh thu</a></li>
-      <li class=""><a href="/doanhthusp" class="text-decoration-none px-3 py-2 d-block">
-          Doanh thu sản phẩm</a></li>
-      </li>
-
-
-      <li class=""><a href="/HoaDon" class="text-decoration-none px-3 py-2 d-block">
-          Hóa đơn</a></li>
-
-
-      <li class="kt-menu__item kt-menu__item--submenu kt-menu__item--open">
-        <a href="">
-          <span class="kt-menu__link-text">con casa</span>
-          <i class="kt-menu__ver-arrow la la-angle-right"> </i>
-        </a>
-        <div class="kt-menu__submenu">
-          <ul class="kt-menu__subnav">
-            <li class="kt-menu__item">
-              <a class="kt-menu__link" href="">hah</a>
-            </li>
-            <li class="kt-menu__item">
-              <a class="kt-menu__link" href="">hah2</a>
-            </li>
-            <li class="kt-menu__item">
-              <a class="kt-menu__link" href="">hah3</a>
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul> -->
 
     <nav>
       <ul>
@@ -237,20 +206,20 @@
             <img width="20" height="20" style="margin-right: 10px;"
               src="https://img.icons8.com/ios/50/event-accepted.png" alt="event-accepted" />
             Đặt lịch hoàn thành</a></li> -->
-            <li style="color: #00008B;" class="">
+        <li style="color: #00008B;" class="">
 
-              <img width="20" height="20" style="margin-right: 10px;"
-                src="https://img.icons8.com/ios/50/event-accepted.png" alt="economic-improvement" />
-              Booking
-              <ul class="submenu">
-                <li class=""><a href="bookings" class="text-decoration-none px-3 py-2 d-block">
-                   Lịch Đặt </a></li>
-                <li class=""><a href="/bookingshuy" class="text-decoration-none px-3 py-2 d-block">
-                    Lịch Đã Hủy</a></li>
-                <li class=""><a href="/bookingshthanh" class="text-decoration-none px-3 py-2 d-block">
-                    Hóa Đơn</a></li>
-              </ul>
-            </li>
+          <img width="20" height="20" style="margin-right: 10px;" src="https://img.icons8.com/ios/50/event-accepted.png"
+            alt="economic-improvement" />
+          Booking
+          <ul class="submenu">
+            <li class=""><a href="bookings" class="text-decoration-none px-3 py-2 d-block">
+                Lịch Đặt </a></li>
+            <li class=""><a href="/bookingshuy" class="text-decoration-none px-3 py-2 d-block">
+                Lịch Đã Hủy</a></li>
+            <li class=""><a href="/bookingshthanh" class="text-decoration-none px-3 py-2 d-block">
+                Hóa Đơn</a></li>
+          </ul>
+        </li>
         <li class=""><a href="/notifications">
             <img width="20" height="20" style="margin-right: 10px;"
               src="https://img.icons8.com/ios/50/appointment-reminders--v1.png" alt="appointment-reminders--v1" />
