@@ -110,7 +110,11 @@ app.use('/services', servicesRoutes);
 const bookingsRouter = require('./routes/bookingsRouter');
 app.use('/bookings', bookingsRouter);
 
+const bookingsRouterhuy = require('./routes/bookingsRouterhuy');
+app.use('/bookingshuy', bookingsRouterhuy);
 
+const bookingsRouterhthanh = require('./routes/bookingsRouterhthanh');
+app.use('/bookingshthanh', bookingsRouterhthanh);
 
 const doanhthusRouter = require('./routes/doanhThuRoutes');
 app.use('/doanhthu', doanhthusRouter);

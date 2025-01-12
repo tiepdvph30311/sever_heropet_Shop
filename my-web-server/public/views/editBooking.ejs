@@ -36,14 +36,7 @@
                 >
                   Đã xác nhận
                 </button>
-                <button
-                  type="submit"
-                  name="trangThai"
-                  value="Chưa xác nhận"
-                  class="btn btn-warning"
-                >
-                  Chưa xác nhận
-                </button>
+               
                 <button type="button" id="btn-huy" class="btn btn-danger">
                   Hủy
                 </button>
@@ -75,7 +68,7 @@
                 name="lyDoHuy"
                 class="form-control"
                 placeholder="Nhập lý do hủy"
-                required
+               
               />
 
               <!-- Nút xác nhận hủy -->
@@ -99,6 +92,13 @@
       });
 
       const currentStatus = "<%= booking.trangThai %>"; // Trạng thái của booking hiện tại (ví dụ: Đang xử lý)
+      document.querySelector('button[name="trangThai"][value="Đã hủy"]').addEventListener("click", (event) => {
+  const reasonInput = document.getElementById("lyDoHuy");
+  if (!reasonInput.value.trim()) {
+    alert("Vui lòng nhập lý do hủy trước khi xác nhận!");
+    event.preventDefault(); // Ngăn không cho form được gửi nếu trường lý do trống
+  }
+});
 
       // Kiểm tra trạng thái hiện tại của booking
       if (currentStatus === "Chưa xác nhận") {

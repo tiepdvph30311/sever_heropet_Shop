@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách Booking</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f4f6f9;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .main-content {
+      margin-left: 210px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .pagination .page-link {
+      color: #007bff;
+    }
+
+    .pagination .page-item.active .page-link {
+      background-color: #007bff;
+      border-color: #007bff;
+      color: #fff;
+    }
+
+    .search-form-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .search-form-container form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-form-container input,
+    .search-form-container button {
+      padding: 5px 10px;
+      margin: 0;
+    }
+
+    .search-form-container button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .search-form-container button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="d-flex position-relative">
+    <%- include('../views/hader.ejs') %>
+
+    <div class="main-content">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">Danh sách Booking</h1>
+      </div>
+
+      <!-- Tìm kiếm theo ngày và theo số điện thoại khách hàng -->
+      <div class="search-form-container">
+        <form action="/bookingshthanh" method="get">
+          <label for="fromDate">Từ ngày:</label>
+          <input type="date" id="fromDate" name="fromDate" value="<%= fromDate %>">
+          <label for="toDate">Đến ngày:</label>
+          <input type="date" id="toDate" name="toDate" value="<%= toDate %>">
+          <button type="submit">Tìm kiếm</button>
+        </form>
+        <form action="/bookingshthanh" method="get">
+          <input type="text" name="phoneNumber" placeholder="Nhập số điện thoại khách hàng" value="<%= phoneNumber %>" />
+          <button type="submit">Tìm kiếm</button>
+        </form>
+      </div>
+
+      <!-- Table Hiển Thị Booking -->
+      <div class="table-responsive shadow-sm">
+        <table class="table table-bordered table-hover align-middle text-center">
+          <thead class="table-dark">
+            <tr>
+              <th>Cân Nặng</th>
+              <th>Họ Tên Khách Hàng</th>
+              <th>SDT Khách Hàng</th>
+              <th>Loại Thú Cưng</th>
+              <th>Tên Dịch Vụ</th>
+              <th>Tên Thú Cưng</th>
+              <th>Thời Gian Đặt Lịch</th>
+              <th>Trạng Thái</th>
+              <th>Chi tiết</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (bookings.length > 0) { %>
+              <% bookings.forEach(booking => { %>
+                <tr class="<%= booking.trangThai === 'Đã hủy' ? 'table-danger' : '' %>">
+                  <td><%= booking.canNang %> kg</td>
+                  <td><%= booking.hoten %></td>
+                  <td><%= booking.sdt %></td>
+                  <td><%= booking.loaiThuCung %></td>
+                  <td><%= booking.tenDichVu %></td>
+                  <td><%= booking.tenThuCung %></td>
+                  <td>
+                    <% if (booking.thoiGianDatLich && booking.thoiGianDatLich.toDate) { %>
+                      <%= booking.thoiGianDatLich.toDate().toLocaleString() %>
+                    <% } else { %>
+                      Không xác định
+                    <% } %>
+                  </td>
+                  <td class="<%= booking.trangThai === 'Hoàn thành' ? 'text-success' : booking.trangThai === 'Đã hủy' ? 'text-danger' : '' %>">
+                    <%= booking.trangThai || 'Không xác định' %>
+                  </td>
+                  <td><a href="/bookings/details/<%= booking.id %>" class="btn btn-info btn-sm">Xem chi tiết</a></td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="10" class="text-center text-muted">Không có booking nào.</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Phân Trang -->
+      <div class="d-flex justify-content-center mt-4">
+        <nav>
+          <ul class="pagination">
+            <% for (let i = 1; i <= totalPages; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="?page=<%= i %>&fromDate=<%= fromDate %>&toDate=<%= toDate %>&phoneNumber=<%= phoneNumber %>"><%= i %></a>
+              </li>
+            <% } %>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
