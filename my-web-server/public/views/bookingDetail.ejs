@@ -67,17 +67,17 @@
               <td><%= booking.trangThai || 'Không xác định' %></td>
             </tr>
             <% if (booking.trangThai === 'Đã hủy') { %>
-            <tr>
-              <th scope="row">Lý do hủy</th>
-              <td><%= booking.lyDoHuy || 'Không có lý do' %></td>
-            </tr>
-            <% } %>
-            <% if (additionalFee > 0) { %>
-            <tr>
-              <th scope="row">Phí phát sinh</th>
-              <td><%= additionalFee.toLocaleString() %> VND</td>
-            </tr>
-            <% } %>
+              <tr>
+                <th scope="row">Lý do hủy</th>
+                <td><%= booking.lyDoHuy || 'Không có lý do' %></td>
+              </tr>
+              <% } %>
+              <% if (booking.canNang > 15) { %>
+              <tr>
+                <th scope="row">Phí phát sinh (cân nặng thú cưng > 15 kg)</th>
+                <td><%= 50000 %> VND</td>
+              </tr>
+              <% } %>
             <tr>
               <th scope="row">Tổng tiền</th>
               <td><%= booking.giaDichVu.toLocaleString() %> VND</td>
