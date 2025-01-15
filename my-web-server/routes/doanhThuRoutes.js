@@ -4,21 +4,23 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const moment = require('moment');
 
-
 router.get('/', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
 
-    // Chuyển đổi thời gian
-    const start = startDate ? moment(startDate, 'YYYY-MM-DD').startOf('day').toDate() : null;
-    const end = endDate ? moment(endDate, 'YYYY-MM-DD').endOf('day').toDate() : null;
+    // Lấy ngày đầu tiên của tháng hiện tại và ngày hiện tại
+    const now = moment();
+    const defaultStart = now.clone().startOf('month').toDate(); // Ngày 1 của tháng hiện tại
+    const defaultEnd = now.clone().endOf('day').toDate(); // Ngày hiện tại
+
+    // Nếu không có `startDate` hoặc `endDate`, sử dụng mặc định
+    const start = startDate ? moment(startDate, 'YYYY-MM-DD').startOf('day').toDate() : defaultStart;
+    const end = endDate ? moment(endDate, 'YYYY-MM-DD').endOf('day').toDate() : defaultEnd;
 
     // Query Firestore cho thống kê doanh thu
     let revenueQuery = db.collection('CTHDBooking').where('trangThai', '==', 'Hoàn thành');
-    if (start && end) {
-      revenueQuery = revenueQuery.where('thoiGianDatLich', '>=', admin.firestore.Timestamp.fromDate(start))
-                                 .where('thoiGianDatLich', '<=', admin.firestore.Timestamp.fromDate(end));
-    }
+    revenueQuery = revenueQuery.where('thoiGianDatLich', '>=', admin.firestore.Timestamp.fromDate(start))
+                               .where('thoiGianDatLich', '<=', admin.firestore.Timestamp.fromDate(end));
 
     const revenueSnapshot = await revenueQuery.get();
     let totalOrders = 0; // Tổng số đơn
@@ -32,19 +34,23 @@ router.get('/', async (req, res) => {
       totalRevenue += servicePrice; // Tính tổng doanh thu
     });
 
-    // Phần xử lý "Top Sản Phẩm"
-    const topServicesSnapshot = await db.collection('CTHDBooking').where('trangThai', '==', 'Hoàn thành').get();
+    // Phần xử lý "Top Dịch Vụ"
+    let topServicesQuery = db.collection('CTHDBooking').where('trangThai', '==', 'Hoàn thành');
+    topServicesQuery = topServicesQuery.where('thoiGianDatLich', '>=', admin.firestore.Timestamp.fromDate(start))
+                                       .where('thoiGianDatLich', '<=', admin.firestore.Timestamp.fromDate(end));
+
+    const topServicesSnapshot = await topServicesQuery.get();
     const topServiceUsage = {};
 
     topServicesSnapshot.forEach(doc => {
       const data = doc.data();
       const serviceIds = data.serviceIds || []; // Mảng chứa ID dịch vụ
 
-      serviceIds.forEach(serviceIds => {
-        if (!topServiceUsage[serviceIds]) {
-          topServiceUsage[serviceIds] = 0;
+      serviceIds.forEach(serviceId => {
+        if (!topServiceUsage[serviceId]) {
+          topServiceUsage[serviceId] = 0;
         }
-        topServiceUsage[serviceIds]++;
+        topServiceUsage[serviceId]++;
       });
     });
 
@@ -53,12 +59,12 @@ router.get('/', async (req, res) => {
       .slice(0, 10);
 
     const topServices = [];
-    for (const [serviceIds, quantity] of sortedTopServices) {
-      const serviceDoc = await db.collection('services').doc(serviceIds).get();
+    for (const [serviceId, quantity] of sortedTopServices) {
+      const serviceDoc = await db.collection('services').doc(serviceId).get();
       if (serviceDoc.exists) {
         const serviceData = serviceDoc.data();
         topServices.push({
-          serviceIds,
+          serviceId,
           serviceName: serviceData.tenDichVu || 'Không xác định',
           quantity,
         });
@@ -67,8 +73,8 @@ router.get('/', async (req, res) => {
 
     // Truyền cả dữ liệu vào giao diện
     res.render('doanhthu', {
-      startDate: startDate || '',
-      endDate: endDate || '',
+      startDate: startDate || moment(defaultStart).format('YYYY-MM-DD'),
+      endDate: endDate || moment(defaultEnd).format('YYYY-MM-DD'),
       totalOrders, // Tổng số đơn
       totalRevenue, // Tổng doanh thu
       topServices, // Dữ liệu top sản phẩm
@@ -79,6 +85,5 @@ router.get('/', async (req, res) => {
     res.status(500).send('Lỗi khi lấy thống kê');
   }
 });
-
 
 module.exports = router;

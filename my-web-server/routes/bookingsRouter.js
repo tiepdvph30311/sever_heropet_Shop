@@ -157,7 +157,7 @@ router.get('/', async (req, res) => {
         // Lọc theo ngày nếu có
         let query = db.collection('CTHDBooking')
                       .orderBy('thoiGianDatLich', 'desc') // Sắp xếp giảm dần theo thời gian
-                      .where('trangThai', 'in', ['Chưa xác nhận', 'Đã xác nhận']); // Chỉ lấy đơn có trạng thái phù hợp
+                      .where('trangThai', 'in', ['Chưa xác nhận', 'Đã xác nhận','Đang xử lý']); // Chỉ lấy đơn có trạng thái phù hợp
   
         if (fromDate && toDate) {
             query = query.where('thoiGianDatLich', '>=', new Date(fromDate))
@@ -205,7 +205,7 @@ router.get('/', async (req, res) => {
   
         // Lấy tổng số bản ghi cho phân trang
         const totalSnapshot = await db.collection('CTHDBooking')
-                                       .where('trangThai', 'in', ['Chưa xác nhận', 'Đã xác nhận'])
+                                       .where('trangThai', 'in', ['Chưa xác nhận', 'Đã xác nhận','Đang xử lý'])
                                        .get();
         const totalRecords = totalSnapshot.size;
         const totalPages = Math.ceil(totalRecords / pageSize);
@@ -282,7 +282,7 @@ router.get('/', async (req, res) => {
   
         // Lấy tổng số bản ghi cho phân trang
         const totalSnapshot = await db.collection('CTHDBooking')
-                                       .where('trangThai', 'in', ['Chưa xác nhận', 'Đã xác nhận'])
+                                       .where('trangThai', 'in', ['Chưa xác nhận', 'Đã xác nhận','Đang xử lý'])
                                        .get();
         const totalRecords = totalSnapshot.size;
         const totalPages = Math.ceil(totalRecords / pageSize);
