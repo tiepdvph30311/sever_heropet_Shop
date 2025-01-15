@@ -23,9 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
 // Home route
-app.get('/home', (req, res) => {
-  res.render('home');
-});
+const homeRouter = require('./routes/homeRouter');
+app.use('/home', homeRouter);
 
 // Login route
 app.get('/', (req, res) => {
