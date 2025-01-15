@@ -77,7 +77,7 @@ app.post('/login', async (req, res) => {
       // Kiểm tra username và password khớp
       if (adminData.username === username && adminData.pass === password) {
         found = true;
-        return res.redirect('/home');
+        return res.redirect('/product');
       }
     });
 

@@ -4,37 +4,51 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 const moment = require('moment');
 
+// Updated server-side logic
 router.get('/', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
 
-    // Lấy ngày đầu tiên của tháng hiện tại và ngày hiện tại
     const now = moment();
-    const defaultStart = now.clone().startOf('month').toDate(); // Ngày 1 của tháng hiện tại
-    const defaultEnd = now.clone().endOf('day').toDate(); // Ngày hiện tại
+    const defaultStart = now.clone().startOf('month').toDate();
+    const defaultEnd = now.clone().endOf('day').toDate();
 
-    // Nếu không có `startDate` hoặc `endDate`, sử dụng mặc định
     const start = startDate ? moment(startDate, 'YYYY-MM-DD').startOf('day').toDate() : defaultStart;
     const end = endDate ? moment(endDate, 'YYYY-MM-DD').endOf('day').toDate() : defaultEnd;
 
-    // Query Firestore cho thống kê doanh thu
+    // Query for "Hoàn thành" orders
     let revenueQuery = db.collection('CTHDBooking').where('trangThai', '==', 'Hoàn thành');
     revenueQuery = revenueQuery.where('thoiGianDatLich', '>=', admin.firestore.Timestamp.fromDate(start))
                                .where('thoiGianDatLich', '<=', admin.firestore.Timestamp.fromDate(end));
 
     const revenueSnapshot = await revenueQuery.get();
-    let totalOrders = 0; // Tổng số đơn
-    let totalRevenue = 0; // Tổng doanh thu
+    let totalOrders = 0;
+    let totalRevenue = 0;
 
     revenueSnapshot.forEach(doc => {
       const data = doc.data();
       const servicePrice = data.giaDichVu || 0;
-
-      totalOrders += 1; // Đếm số đơn
-      totalRevenue += servicePrice; // Tính tổng doanh thu
+      totalOrders += 1;
+      totalRevenue += servicePrice;
     });
 
-    // Phần xử lý "Top Dịch Vụ"
+    // Query for "Đã hủy" orders
+    let cancelQuery = db.collection('CTHDBooking').where('trangThai', '==', 'Đã hủy');
+    cancelQuery = cancelQuery.where('thoiGianDatLich', '>=', admin.firestore.Timestamp.fromDate(start))
+                             .where('thoiGianDatLich', '<=', admin.firestore.Timestamp.fromDate(end));
+
+    const cancelSnapshot = await cancelQuery.get();
+    let totalCanceledOrders = 0;
+    let totalCanceledAmount = 0;
+
+    cancelSnapshot.forEach(doc => {
+      const data = doc.data();
+      const cancelAmount = data.tienHuy || 0;
+      totalCanceledOrders += 1;
+      totalCanceledAmount += cancelAmount;
+    });
+
+    // Top Services Query (existing functionality)
     let topServicesQuery = db.collection('CTHDBooking').where('trangThai', '==', 'Hoàn thành');
     topServicesQuery = topServicesQuery.where('thoiGianDatLich', '>=', admin.firestore.Timestamp.fromDate(start))
                                        .where('thoiGianDatLich', '<=', admin.firestore.Timestamp.fromDate(end));
@@ -44,7 +58,7 @@ router.get('/', async (req, res) => {
 
     topServicesSnapshot.forEach(doc => {
       const data = doc.data();
-      const serviceIds = data.serviceIds || []; // Mảng chứa ID dịch vụ
+      const serviceIds = data.serviceIds || [];
 
       serviceIds.forEach(serviceId => {
         if (!topServiceUsage[serviceId]) {
@@ -71,13 +85,14 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // Truyền cả dữ liệu vào giao diện
     res.render('doanhthu', {
       startDate: startDate || moment(defaultStart).format('YYYY-MM-DD'),
       endDate: endDate || moment(defaultEnd).format('YYYY-MM-DD'),
-      totalOrders, // Tổng số đơn
-      totalRevenue, // Tổng doanh thu
-      topServices, // Dữ liệu top sản phẩm
+      totalOrders,
+      totalRevenue,
+      totalCanceledOrders, // Tổng đơn hàng đã hủy
+      totalCanceledAmount, // Tổng tiền hủy
+      topServices,
     });
 
   } catch (error) {
@@ -85,5 +100,6 @@ router.get('/', async (req, res) => {
     res.status(500).send('Lỗi khi lấy thống kê');
   }
 });
+
 
 module.exports = router;

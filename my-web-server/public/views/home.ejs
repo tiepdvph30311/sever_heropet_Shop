@@ -111,19 +111,7 @@
               </div>
             </div>
 
-            <!-- Tiện nghi -->
-            <div class="col-md-3">
-              <div class="card text-white" style="background-color: #F78C6A;">
-                <div class="card-body text-center">
-                  <h5 class="card-title">
-                    <i class="fas fa-dollar"></i> Doanh thu vi phạm
-                  </h5>
-                  <p class="card-text display-6">
-                    <%= tienViPham %>000 VND
-                  </p>
-                </div>
-              </div>
-            </div>
+
 
             <!-- Dịch vụ -->
             <div class="col-md-3">
@@ -139,7 +127,32 @@
                 </div>
               </div>
             </div>
+            <div class="col-md-3">
+              <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                  <h5 class="card-title">
+                    <i class="fas fa-file-invoice-dollar"></i> Đơn hoàn thành hôm nay
+                  </h5>
+                  <p class="card-text display-6">
+                    <%= bookingsToday %>
+                  </p>
+                </div>
+              </div>
+            </div>
 
+            <div class="col-md-3">
+              <div class="card bg-header text-white " style="background-color: #1240bd;">
+                <div class="card-body text-center">
+                  <h5 class="card-title">
+                    <i class="fas fa-file-invoice-dollar"></i> Đơn cần xử lý hôm nay
+                  </h5>
+                  <p class="card-text display-6">
+                    <%= bookingsTodayTong %>
+
+                  </p>
+                </div>
+              </div>
+            </div>
 
             <!-- <div class="col-md-3">
               <div class="card bg-secondary text-white">
@@ -184,7 +197,7 @@
               <div class="card text-white" style="background-color: #413e95;">
                 <div class="card-body text-center">
                   <h5 class="card-title">
-                    <i class="fas fa-file-invoice-dollar"></i> Hóa đơn hoàn thành
+                    <i class="fas fa-file-invoice-dollar"></i> HĐDV hoàn thành
                   </h5>
                   <p class="card-text display-6">
                     <%= totalOrders %>
@@ -198,7 +211,7 @@
               <div class="card bg-light text-dark">
                 <div class="card-body text-center">
                   <h5 class="card-title">
-                    <i class="fas fa-file-invoice-dollar"></i> HĐ chưa xác nhận
+                    <i class="fas fa-file-invoice-dollar"></i> HĐDV chưa xác nhận
                   </h5>
                   <p class="card-text display-6">
 
@@ -213,7 +226,7 @@
               <div class="card text-white" style="background-color: #716fa5;">
                 <div class="card-body text-center">
                   <h5 class="card-title">
-                    <i class="fas fa-file-invoice-dollar"></i> HĐ bị hủy
+                    <i class="fas fa-file-invoice-dollar"></i> HĐDV bị hủy
                   </h5>
                   <p class="card-text display-6">
                     <%= tonghdcxnhuy %>
@@ -249,33 +262,21 @@
                 </div>
               </div>
             </div>
-
+            <!-- Tiện nghi -->
             <div class="col-md-3">
-              <div class="card bg-primary text-white">
+              <div class="card text-white" style="background-color: #F78C6A;">
                 <div class="card-body text-center">
                   <h5 class="card-title">
-                    <i class="fas fa-file-invoice-dollar"></i> Đơn hoàn thành hôm nay
+                    <i class="fas fa-dollar"></i> Doanh thu vi phạm
                   </h5>
                   <p class="card-text display-6">
-                    <%= bookingsToday %>
+                    <%= tienViPham %> VND
                   </p>
                 </div>
               </div>
             </div>
 
-            <div class="col-md-3">
-              <div class="card bg-header text-white " style="background-color: #1240bd;">
-                <div class="card-body text-center">
-                  <h5 class="card-title">
-                    <i class="fas fa-file-invoice-dollar"></i> Đơn cần xử lý hôm nay
-                  </h5>
-                  <p class="card-text display-6">
-                    <%= bookingsTodayTong %>
 
-                  </p>
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>
