@@ -101,8 +101,9 @@
               <th>Tên Thú Cưng</th>
               <th>Thời Gian Đặt Lịch</th>
               <th>Trạng Thái</th>
+              <th>Chi Tiết</th>
+              <th>Hoàn Tiền</th>
               <th>Hành Động</th>
-              <th>Chi tiết</th>
             </tr>
           </thead>
           <tbody>
@@ -125,16 +126,17 @@
                   <td class="<%= booking.trangThai === 'Hoàn thành' ? 'text-success' : booking.trangThai === 'Đã hủy' ? 'text-danger' : '' %>">
                     <%= booking.trangThai || 'Không xác định' %>
                   </td>
-                  <td>
-                    <% if (booking.trangThai === 'Đã hủy') { %>
-                      <span class="text-muted">Không thể sửa (Đã hủy)</span>
-                    <% } else if (booking.trangThai === 'Hoàn thành') { %>
-                      <span class="text-muted">Không thể sửa (Hoàn thành)</span>
-                    <% } else { %>
-                      <a href="/bookings/editBooking/<%= booking.id %>" class="btn btn-success btn-sm">Sửa</a>
-                    <% } %>
-                  </td>
+                
                   <td><a href="/bookings/details/<%= booking.id %>" class="btn btn-info btn-sm">Xem chi tiết</a></td>
+                  <td><%= booking.trangThaiHuy ? 'Đã hoàn tiền' : 'Chưa hoàn tiền' %></td>
+                  <td>
+                    <% if (!booking.trangThaiHuy) { %>
+                        <a href="/update/<%= booking.id %>" class="btn btn-warning btn-sm">Cập nhật</a>
+                    <% } else { %>
+                        <span class="text-muted">Đã hoàn tiền</span>
+                    <% } %>
+                </td>
+                
                 </tr>
               <% }) %>
             <% } else { %>

@@ -608,6 +608,10 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
 
       // Cập nhật trạng thái đơn hàng
       const updateData = { trangThai };
+      if (trangThai === 'Đã hủy') {
+        updateData.trangThaiHuy = false; // Thêm trạng thái hoàn tiền
+        updateData.tienHuy = 0;         // Thêm giá trị tiền hủy
+    }
       if (trangThai === 'Đã hủy' && lyDoHuy) {
           updateData.lyDoHuy = lyDoHuy; // Lưu lý do huỷ nếu trạng thái là huỷ
       }
@@ -638,46 +642,96 @@ router.post('/editBooking/:idcthdbooking', async (req, res) => {
       //==========================================
 
       // Lấy email từ bảng `IDUser` dựa vào `iduser` trong booking
-      if (booking.iduser) {
-          const userSnapshot = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
-          if (userSnapshot.empty) {
-              console.error(`Không tìm thấy user với iduser: ${booking.iduser}`);
-          } else {
-              const userData = userSnapshot.docs[0].data();
-              if (userData['email']) {
-                  const emailContent = `
-                      <h2>Thông tin đặt lịch của bạn</h2>
-                      <p><b>Tên khách hàng:</b> ${booking.tenKhachHang}</p>
-                      <p><b>Số điện thoại:</b> ${booking.sdtNguoiDung}</p>
-                      <p><b>Loại thú cưng:</b> ${booking.loaiThuCung}</p>
-                      <p><b>Tên thú cưng:</b> ${booking.tenThuCung}</p>
-                      <p><b>Dịch vụ:</b> ${booking.tenDichVu}</p>
-                      <p><b>Giá dịch vụ:</b> ${booking.giaDichVu.toLocaleString()} VND</p>
-                      <p><b>Trọng lượng thú cưng:</b> ${booking.canNang} kg</p>
-                      <p><b>Thời gian đặt lịch:</b> ${new Date(booking.thoiGianDatLich.toDate()).toLocaleString()}</p>
-                      <p><b>Trạng thái hiện tại:</b> ${trangThai}</p>
-                      <br>
-                      <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
-                  `;
+    //   if (booking.iduser) {
+    //       const userSnapshot = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
+    //       if (userSnapshot.empty) {
+    //           console.error(`Không tìm thấy user với iduser: ${booking.iduser}`);
+    //       } else {
+    //           const userData = userSnapshot.docs[0].data();
+    //           if (userData['email']) {
+    //               const emailContent = `
+    //                   <h2>Thông tin đặt lịch của bạn</h2>
+    //                   <p><b>Tên khách hàng:</b> ${booking.tenKhachHang}</p>
+    //                   <p><b>Số điện thoại:</b> ${booking.sdtNguoiDung}</p>
+    //                   <p><b>Loại thú cưng:</b> ${booking.loaiThuCung}</p>
+    //                   <p><b>Tên thú cưng:</b> ${booking.tenThuCung}</p>
+    //                   <p><b>Dịch vụ:</b> ${booking.tenDichVu}</p>
+    //                   <p><b>Giá dịch vụ:</b> ${booking.giaDichVu.toLocaleString()} VND</p>
+    //                   <p><b>Trọng lượng thú cưng:</b> ${booking.canNang} kg</p>
+    //                   <p><b>Thời gian đặt lịch:</b> ${new Date(booking.thoiGianDatLich.toDate()).toLocaleString()}</p>
+    //                   <p><b>Trạng thái hiện tại:</b> ${trangThai}</p>
+                      
+    //                   <br>
+    //                   <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+    //               `;
 
-                  const mailOptions = {
-                      from: 'tiepdv220601@gmail.com',
-                      to: userData['email'],
-                      subject: 'Cập nhật trạng thái đơn hàng',
-                      text: `Trạng thái đơn hàng ${idcthdbooking} của bạn đã được cập nhật thành: ${trangThai}.`,
-                      html: emailContent
-                  };
+    //               const mailOptions = {
+    //                   from: 'tiepdv220601@gmail.com',
+    //                   to: userData['email'],
+    //                   subject: 'Cập nhật trạng thái đơn hàng',
+    //                   text: `Trạng thái đơn hàng ${idcthdbooking} của bạn đã được cập nhật thành: ${trangThai}.`,
+    //                   html: emailContent
+    //               };
 
-                  // Gửi email
-                  await transporter.sendMail(mailOptions);
-              } else {
-                  console.error(`Không tìm thấy trường 'e-mail' cho iduser: ${booking.iduser}`);
-              }
-          }
-      } else {
-          console.error('Booking không có iduser.');
-      }
-
+    //               // Gửi email
+    //               await transporter.sendMail(mailOptions);
+    //           } else {
+    //               console.error(`Không tìm thấy trường 'e-mail' cho iduser: ${booking.iduser}`);
+    //           }
+    //       }
+    //   } else {
+    //       console.error('Booking không có iduser.');
+    //   }
+    if (booking.iduser) {
+        const userSnapshot = await db.collection('IDUser').where('iduser', '==', booking.iduser).get();
+        if (userSnapshot.empty) {
+            console.error(`Không tìm thấy user với iduser: ${booking.iduser}`);
+        } else {
+            const userData = userSnapshot.docs[0].data();
+            if (userData['email']) {
+                let emailContent = `
+                    <h2>Thông tin đặt lịch của bạn</h2>
+                    <p><b>Tên khách hàng:</b> ${booking.tenKhachHang}</p>
+                    <p><b>Số điện thoại:</b> ${booking.sdtNguoiDung}</p>
+                    <p><b>Loại thú cưng:</b> ${booking.loaiThuCung}</p>
+                    <p><b>Tên thú cưng:</b> ${booking.tenThuCung}</p>
+                    <p><b>Dịch vụ:</b> ${booking.tenDichVu}</p>
+                    <p><b>Giá dịch vụ:</b> ${booking.giaDichVu.toLocaleString()} VND</p>
+                    <p><b>Trọng lượng thú cưng:</b> ${booking.canNang} kg</p>
+                    <p><b>Thời gian đặt lịch:</b> ${new Date(booking.thoiGianDatLich.toDate()).toLocaleString()}</p>
+                    <p><b>Trạng thái hiện tại:</b> ${trangThai}</p>
+                `;
+    
+                // Nếu trạng thái là "Đã hủy", thêm mục lý do hủy vào email
+                if (trangThai === 'Đã hủy' && lyDoHuy) {
+                    emailContent += `
+                        <p><b>Lý do hủy:</b> ${lyDoHuy}</p>
+                    `;
+                }
+    
+                emailContent += `
+                    <br>
+                    <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+                `;
+    
+                const mailOptions = {
+                    from: 'tiepdv220601@gmail.com',
+                    to: userData['email'],
+                    subject: 'Cập nhật trạng thái đơn hàng',
+                    text: `Trạng thái đơn hàng ${idcthdbooking} của bạn đã được cập nhật thành: ${trangThai}.`,
+                    html: emailContent
+                };
+    
+                // Gửi email
+                await transporter.sendMail(mailOptions);
+            } else {
+                console.error(`Không tìm thấy trường 'email' cho iduser: ${booking.iduser}`);
+            }
+        }
+    } else {
+        console.error('Booking không có iduser.');
+    }
+    
       // Thêm thông báo vào bảng `Notifications` nếu trạng thái là "Hoàn thành"
       if (trangThai === 'Hoàn thành') {
           const notification = {

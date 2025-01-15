@@ -113,6 +113,10 @@ app.use('/bookings', bookingsRouter);
 const bookingsRouterhuy = require('./routes/bookingsRouterhuy');
 app.use('/bookingshuy', bookingsRouterhuy);
 
+const updatehoantien = require('./routes/updateTrangThaiHuy');
+app.use('/update', updatehoantien);
+
+
 const bookingsRouterhthanh = require('./routes/bookingsRouterhthanh');
 app.use('/bookingshthanh', bookingsRouterhthanh);
 

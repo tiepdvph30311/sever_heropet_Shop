@@ -82,6 +82,12 @@
               <th scope="row">Tổng tiền</th>
               <td><%= booking.giaDichVu.toLocaleString() %> VND</td>
             </tr>
+            <% if (typeof booking.trangThaiHuy !== 'undefined') { %>
+              <tr>
+                <th scope="row">Tiền Cần Giữ</th>
+                <td><%= booking.tienHuy.toLocaleString() %> VND</td>
+              </tr>
+              <% } %>
           </tbody>
         </table>
       </div>
