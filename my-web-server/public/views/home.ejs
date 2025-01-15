@@ -119,7 +119,7 @@
                     <i class="fas fa-dollar"></i> Doanh thu vi phạm
                   </h5>
                   <p class="card-text display-6">
-                    <%= tienViPham %>000 VND
+                    <%= (tienViPham*1000).toLocaleString('vi-VN') %> VND
                   </p>
                 </div>
               </div>
@@ -241,10 +241,10 @@
               <div class="card bg-danger text-white">
                 <div class="card-body text-center">
                   <h5 class="card-title">
-                    <i class="fas fa-dollar"></i> Tổng doanh thu
+                    <i class="fas fa-dollar"></i> Doanh thu hoàn thành
                   </h5>
                   <p class="card-text display-6">
-                    <%= totalRevenue %> VND
+                    <%= totalRevenue.toLocaleString('vi-VN') %> VND
                   </p>
                 </div>
               </div>
@@ -272,6 +272,19 @@
                   <p class="card-text display-6">
                     <%= bookingsTodayTong %>
 
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                  <h5 class="card-title">
+                    <i class="fas fa-ticket-alt"></i> Tổng doanh thu
+                  </h5>
+                  <p class="card-text display-6">
+                    <%= (totalRevenue  + (tienViPham * 1000) ).toLocaleString('vi-VN') %> VND
                   </p>
                 </div>
               </div>
