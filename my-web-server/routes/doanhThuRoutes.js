@@ -58,13 +58,13 @@ router.get('/', async (req, res) => {
 
     topServicesSnapshot.forEach(doc => {
       const data = doc.data();
-      const serviceIds = data.serviceIds || [];
+      const idcthdbooking = data.idcthdbooking || [];
 
-      serviceIds.forEach(serviceId => {
-        if (!topServiceUsage[serviceId]) {
-          topServiceUsage[serviceId] = 0;
+      idcthdbooking.forEach(idcthdbooking => {
+        if (!topServiceUsage[idcthdbooking]) {
+          topServiceUsage[idcthdbooking] = 0;
         }
-        topServiceUsage[serviceId]++;
+        topServiceUsage[idcthdbooking]++;
       });
     });
 
@@ -73,12 +73,12 @@ router.get('/', async (req, res) => {
       .slice(0, 10);
 
     const topServices = [];
-    for (const [serviceId, quantity] of sortedTopServices) {
-      const serviceDoc = await db.collection('services').doc(serviceId).get();
+    for (const [idcthdbooking, quantity] of sortedTopServices) {
+      const serviceDoc = await db.collection('CTBooking').doc(idcthdbooking).get();
       if (serviceDoc.exists) {
         const serviceData = serviceDoc.data();
         topServices.push({
-          serviceId,
+          idcthdbooking,
           serviceName: serviceData.tenDichVu || 'Không xác định',
           quantity,
         });
